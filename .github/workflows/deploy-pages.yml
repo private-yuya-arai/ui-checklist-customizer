@@ -1,0 +1,46 @@
+name: Deploy to GitHub Pages
+
+on:
+  # mainブランチにpushされたら自動実行
+  push:
+    branches: [main]
+  # Actionsタブから手動実行もできるように
+  workflow_dispatch:
+
+# GITHUB_TOKEN に Pages デプロイ用の権限を付与
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時実行を1つに制限（古いデプロイが進行中なら新しいのが走る）
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        # ビルド不要な静的サイトなので、リポジトリ全体をそのままアップロード
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

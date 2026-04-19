@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UIチェックリスト カスタマイズツール</title>
+<meta name="description" content="デジタル庁UIチェックリストをベースに、自社システム用のチェックリストを作成できるWebツール">
+<link rel="stylesheet" href="./css/styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body class="device-web">
+<header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">UI</div>
+      <div>
+        <h1 class="brand-title">UIチェックリスト カスタマイズツール</h1>
+        <p class="brand-subtitle">中央のサンプル画面を見ながら、右サイドで必要なUI項目を選定 → Excel出力</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="device-toggle-wrap">
+  <div class="device-toggle" role="group" aria-label="デバイス切替">
+    <button class="device-btn is-active" data-device="web" type="button" aria-pressed="true">
+      <span class="device-btn-icon">🖥</span> Webサイト
+    </button>
+    <button class="device-btn" data-device="mobile" type="button" aria-pressed="false">
+      <span class="device-btn-icon">📱</span> 携帯アプリ
+    </button>
+  </div>
+  <p class="device-toggle-hint">Web／モバイルを切り替えてチェックリストを検証できます</p>
+</div>
+
+
+<nav class="screen-tabs" role="tablist" aria-label="画面切替">
+  <button class="screen-tab" role="tab" data-screen="intro" type="button"><span class="screen-tab-num">1</span>フォーム導入</button>
+  <button class="screen-tab" role="tab" data-screen="login" type="button"><span class="screen-tab-num">2</span>ログイン</button>
+  <button class="screen-tab" role="tab" data-screen="form-personal" type="button"><span class="screen-tab-num">3</span>基本情報入力</button>
+  <button class="screen-tab" role="tab" data-screen="form-address" type="button"><span class="screen-tab-num">4</span>住所・連絡先</button>
+  <button class="screen-tab" role="tab" data-screen="form-upload" type="button"><span class="screen-tab-num">5</span>書類アップロード</button>
+  <button class="screen-tab" role="tab" data-screen="confirm" type="button"><span class="screen-tab-num">6</span>確認画面</button>
+  <button class="screen-tab" role="tab" data-screen="error" type="button"><span class="screen-tab-num">7</span>エラー画面</button>
+  <button class="screen-tab" role="tab" data-screen="complete" type="button"><span class="screen-tab-num">8</span>送信完了</button>
+</nav>
+
+<main class="layout">
+  <!-- Sample site -->
+  <section class="sample-wrap" aria-label="サンプルサイト">
+    <div class="sample-header">
+      <div class="sample-dots">
+        <div class="sample-dot"></div><div class="sample-dot"></div><div class="sample-dot"></div>
+      </div>
+      <div class="sample-url" id="sampleUrl">https://example.city.jp/apply</div>
+    </div>
+    <div class="sample-body" id="sampleBody">
+      <section class="screen web-screen" id="screen-web-intro" data-screen="intro" data-device="web" hidden>
+      
+<div class="ds-card">
+  <div class="ds-stepper" data-anchor="s-stepper">
+    <span class="ds-step is-active">1. 申請内容</span>
+    <span class="ds-step">2. 入力</span>
+    <span class="ds-step">3. 確認</span>
+    <span class="ds-step">4. 完了</span>
+  </div>
+
+  <h1 class="ds-title" data-anchor="s-heading">住民票の写し 交付申請</h1>
+
+  <div class="ds-alert ds-alert-info" data-anchor="s-eligibility">
+    <strong>■ 利用できる方</strong>
+    <p>本市に住民登録がある方ご本人、またはその同一世帯の方がご利用いただけます。</p>
+  </div>
+
+  <div class="ds-alert ds-alert-info" data-anchor="s-documents">
+    <strong>■ 申請に必要な書類</strong>
+    <ul>
+      <li>マイナンバーカードまたは署名用電子証明書</li>
+      <li>本人確認書類（運転免許証など）</li>
+    </ul>
+  </div>
+
+  <div class="ds-alert ds-alert-info" data-anchor="s-hardware">
+    <strong>■ ご利用環境</strong>
+    <p>ICカードリーダー、マイナポータルアプリが必要です。</p>
+  </div>
+
+  <div class="ds-alert ds-alert-warn" data-anchor="s-hours">
+    <strong>■ 利用時間</strong>
+    <p>平日 8:30～17:15（土日祝・年末年始は休止）</p>
+  </div>
+
+  <div class="ds-section" data-anchor="s-terms">
+    <h2>主な用語について</h2>
+    <p>本申請では <span class="ds-tip">署名用電子証明書<span class="ds-tipicon">?</span></span> をご利用いただきます。詳しい用語解説は<a class="ds-link" href="#" data-anchor="s-link-text">用語集ページをご覧ください</a>。</p>
+  </div>
+
+  <div class="ds-section" data-anchor="s-flowchart">
+    <h2>申請までの流れ</h2>
+    <div class="ds-flow">
+      <div class="ds-flow-node">利用資格確認</div>
+      <div class="ds-flow-arrow">→</div>
+      <div class="ds-flow-node is-decide">個人？法人？</div>
+      <div class="ds-flow-arrow">→</div>
+      <div class="ds-flow-node">該当フォームへ</div>
+    </div>
+  </div>
+
+  <div class="ds-url-bar" data-anchor="s-bookmark">
+    <span class="ds-url-icon">🔗</span>
+    <code>https://example.city.jp/apply/juminhyo</code>
+    <span class="ds-url-note">このページはブックマーク可能です</span>
+  </div>
+
+  <div class="ds-actions">
+    <button class="ds-btn ds-btn-pri">申請を開始する</button>
+  </div>
+</div>
+    
+      
+<div class="ds-global-note">
+  <details class="ds-details">
+    <summary>この画面に共通で適用されるUI原則（クリックで展開）</summary>
+    <div class="ds-global-grid">
+      <div data-anchor="s-responsive">📱 <strong>レスポンシブ対応</strong><p class="ds-small">スマホ／PC両対応</p></div>
+      <div data-anchor="s-designsys">🎨 <strong>デザインシステム準拠</strong><p class="ds-small">色・タイポ・コンポーネント統一</p></div>
+      <div data-anchor="s-consistency">📐 <strong>レイアウト一貫性</strong><p class="ds-small">機能・用語・操作が統一</p></div>
+      <div data-anchor="s-font-size">🔤 <strong>本文 16px 以上</strong><p class="ds-small">読みやすい本文サイズ</p></div>
+      <div data-anchor="s-contrast">🌓 <strong>コントラスト 4.5:1 以上</strong><p class="ds-small">判別しやすい配色</p></div>
+      <div data-anchor="s-differ">🔘 <strong>操作可能要素の差別化</strong><p class="ds-small">下線・枠線など色以外の手がかり</p></div>
+      <div data-anchor="s-letterspace">📏 <strong>文字間隔はCSS</strong><p class="ds-small">ホワイトスペース文字は使わない</p></div>
+      <div data-anchor="s-simple">📝 <strong>シンプルレイアウト</strong><p class="ds-small">縦配置基本、段組は避ける</p></div>
+      <div data-anchor="s-focus-ring">🟡 <strong>フォーカスインジケーター</strong><p class="ds-small">キーボード操作時に枠表示</p></div>
+      <div data-anchor="s-tap-target">👆 <strong>タップ44px以上</strong><p class="ds-small">操作しやすい大きさ</p></div>
+      <div data-anchor="s-keyboard">⌨️ <strong>キーボード操作対応</strong><p class="ds-small">Tab送りで全操作可能</p></div>
+      <div data-anchor="s-rightclick">🖱️ <strong>右クリック／選択許容</strong><p class="ds-small">コピー・テキスト選択OK</p></div>
+      <div data-anchor="s-gesture">👉 <strong>シンプルなジェスチャー</strong><p class="ds-small">複雑なスワイプの代替あり</p></div>
+      <div data-anchor="s-click-menu">👇 <strong>クリック起点のメニュー</strong><p class="ds-small">マウスオーバー表示は避ける</p></div>
+      <div data-anchor="s-video">▶️ <strong>自動再生しない</strong><p class="ds-small">ユーザー操作で動作開始</p></div>
+      <div data-anchor="s-external">🔗 <strong>外部リンク明示</strong><p class="ds-small">別ドメイン遷移をアイコンで表示</p></div>
+      <div data-anchor="s-help-fab">❓ <strong>ヘルプ動線</strong><p class="ds-small">右下のヘルプボタン常設</p></div>
+    </div>
+  </details>
+</div>
+
+      <div class="ds-fab" data-anchor="s-help-fab" title="ヘルプ">?</div>
+    </section>
+<section class="screen web-screen" id="screen-web-login" data-screen="login" data-device="web" hidden>
+      
+<div class="ds-card">
+  <h1 class="ds-title">ログイン</h1>
+
+  <div class="ds-form">
+    <div class="ds-field" data-anchor="s-email-verify">
+      <label class="ds-label" data-anchor="s-label">メールアドレス <span class="ds-req" data-anchor="s-required">必須</span></label>
+      <input type="email" class="ds-input" placeholder="example@domain.jp">
+      <p class="ds-help" data-anchor="s-format-hint">登録時、確認メールを送信します（本人確認）</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-password">
+      <label class="ds-label">パスワード <span class="ds-req">必須</span></label>
+      <input type="password" class="ds-input" value="" placeholder="パスワード">
+      <p class="ds-help">64文字以上、記号使用可、定期変更は不要です</p>
+      <p class="ds-help" data-anchor="s-paste">※入力欄はコピー＆ペーストに対応しています</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-captcha">
+      <label class="ds-label">本人確認（ボット対策）</label>
+      <div class="ds-captcha-box">
+        <span class="ds-captcha-text">aB3x7Z</span>
+        <input type="text" class="ds-input ds-input-sm" placeholder="表示の文字を入力">
+      </div>
+      <div class="ds-captcha-alt">
+        <button class="ds-btn ds-btn-sec ds-btn-sm" type="button">SMSで認証する</button>
+        <button class="ds-btn ds-btn-sec ds-btn-sm" type="button">音声通話で認証する</button>
+      </div>
+    </div>
+
+    <div class="ds-actions">
+      <button class="ds-btn ds-btn-pri" data-anchor="s-tap-target">ログイン</button>
+    </div>
+  </div>
+</div>
+    
+      
+<div class="ds-global-note">
+  <details class="ds-details">
+    <summary>この画面に共通で適用されるUI原則（クリックで展開）</summary>
+    <div class="ds-global-grid">
+      <div data-anchor="s-responsive">📱 <strong>レスポンシブ対応</strong><p class="ds-small">スマホ／PC両対応</p></div>
+      <div data-anchor="s-designsys">🎨 <strong>デザインシステム準拠</strong><p class="ds-small">色・タイポ・コンポーネント統一</p></div>
+      <div data-anchor="s-consistency">📐 <strong>レイアウト一貫性</strong><p class="ds-small">機能・用語・操作が統一</p></div>
+      <div data-anchor="s-font-size">🔤 <strong>本文 16px 以上</strong><p class="ds-small">読みやすい本文サイズ</p></div>
+      <div data-anchor="s-contrast">🌓 <strong>コントラスト 4.5:1 以上</strong><p class="ds-small">判別しやすい配色</p></div>
+      <div data-anchor="s-differ">🔘 <strong>操作可能要素の差別化</strong><p class="ds-small">下線・枠線など色以外の手がかり</p></div>
+      <div data-anchor="s-letterspace">📏 <strong>文字間隔はCSS</strong><p class="ds-small">ホワイトスペース文字は使わない</p></div>
+      <div data-anchor="s-simple">📝 <strong>シンプルレイアウト</strong><p class="ds-small">縦配置基本、段組は避ける</p></div>
+      <div data-anchor="s-focus-ring">🟡 <strong>フォーカスインジケーター</strong><p class="ds-small">キーボード操作時に枠表示</p></div>
+      <div data-anchor="s-tap-target">👆 <strong>タップ44px以上</strong><p class="ds-small">操作しやすい大きさ</p></div>
+      <div data-anchor="s-keyboard">⌨️ <strong>キーボード操作対応</strong><p class="ds-small">Tab送りで全操作可能</p></div>
+      <div data-anchor="s-rightclick">🖱️ <strong>右クリック／選択許容</strong><p class="ds-small">コピー・テキスト選択OK</p></div>
+      <div data-anchor="s-gesture">👉 <strong>シンプルなジェスチャー</strong><p class="ds-small">複雑なスワイプの代替あり</p></div>
+      <div data-anchor="s-click-menu">👇 <strong>クリック起点のメニュー</strong><p class="ds-small">マウスオーバー表示は避ける</p></div>
+      <div data-anchor="s-video">▶️ <strong>自動再生しない</strong><p class="ds-small">ユーザー操作で動作開始</p></div>
+      <div data-anchor="s-external">🔗 <strong>外部リンク明示</strong><p class="ds-small">別ドメイン遷移をアイコンで表示</p></div>
+      <div data-anchor="s-help-fab">❓ <strong>ヘルプ動線</strong><p class="ds-small">右下のヘルプボタン常設</p></div>
+    </div>
+  </details>
+</div>
+
+      <div class="ds-fab" data-anchor="s-help-fab" title="ヘルプ">?</div>
+    </section>
+<section class="screen web-screen" id="screen-web-form-personal" data-screen="form-personal" data-device="web" hidden>
+      
+<div class="ds-card">
+  <div class="ds-stepper" data-anchor="s-stepper">
+    <span class="ds-step is-done">✓ 申請内容</span>
+    <span class="ds-step is-active">2. 基本情報</span>
+    <span class="ds-step">3. 住所</span>
+    <span class="ds-step">4. 書類</span>
+    <span class="ds-step">5. 確認</span>
+  </div>
+
+  <h1 class="ds-title" data-anchor="s-heading">基本情報のご入力</h1>
+  <p class="ds-lead" data-anchor="s-simple">入力欄は縦に並べ、見やすいシンプルなレイアウトにしています。</p>
+
+  <div class="ds-form">
+    <div class="ds-field" data-anchor="s-branch">
+      <label class="ds-label">申請者区分 <span class="ds-req">必須</span></label>
+      <div class="ds-radio-group">
+        <label><input type="radio" name="kind" checked>個人</label>
+        <label><input type="radio" name="kind">法人</label>
+      </div>
+      <p class="ds-help">※ 選択内容に応じて以下の入力欄が切り替わります</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-name">
+      <label class="ds-label" data-anchor="s-label">氏名 <span class="ds-req">必須</span></label>
+      <input type="text" class="ds-input" placeholder="山田 太郎">
+    </div>
+
+    <div class="ds-field" data-anchor="s-middle">
+      <label class="ds-label">ミドルネーム・旧姓 <span class="ds-opt">任意</span></label>
+      <input type="text" class="ds-input" placeholder="（お持ちの方のみ）">
+    </div>
+
+    <div class="ds-field" data-anchor="s-furigana">
+      <label class="ds-label">氏名（カタカナ） <span class="ds-req">必須</span></label>
+      <input type="text" class="ds-input" placeholder="ヤマダ タロウ">
+      <p class="ds-help">全角・半角どちらでも入力できます（自動で整形します）</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-gender">
+      <label class="ds-label">性別</label>
+      <div class="ds-radio-group">
+        <label><input type="radio" name="gen">男性</label>
+        <label><input type="radio" name="gen">女性</label>
+        <label><input type="radio" name="gen">その他</label>
+        <label><input type="radio" name="gen">回答しない</label>
+      </div>
+    </div>
+
+    <div class="ds-field" data-anchor="s-dob">
+      <label class="ds-label">生年月日 <span class="ds-req">必須</span></label>
+      <div class="ds-row">
+        <select class="ds-input ds-input-sel"><option>令和</option><option>平成</option><option selected>昭和</option></select>
+        <input type="text" class="ds-input ds-input-w40" placeholder="年" value="60" data-anchor="s-direct-input">
+        <input type="text" class="ds-input ds-input-w40" placeholder="月" value="4">
+        <input type="text" class="ds-input ds-input-w40" placeholder="日" value="15">
+      </div>
+      <p class="ds-help" data-anchor="s-format-hint">既知の日付は直接入力が便利です（カレンダー併用可）</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-example">
+      <label class="ds-label">電話番号 <span class="ds-req">必須</span></label>
+      <input type="tel" class="ds-input ds-input-w60" data-anchor="s-widths">
+      <p class="ds-help">例：09012345678（半角数字のみ、ハイフンなし）</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-counter">
+      <label class="ds-label">ご連絡事項 <span class="ds-opt">任意</span></label>
+      <textarea class="ds-input ds-textarea" placeholder="最大200文字"></textarea>
+      <p class="ds-counter">0 / 200 文字</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-reuse">
+      <label class="ds-check"><input type="checkbox"> 前回申請時の内容を引き継ぐ</label>
+    </div>
+
+    <div class="ds-field" data-anchor="s-default">
+      <label class="ds-label">よく使う連絡方法</label>
+      <select class="ds-input"><option selected>メール</option><option>電話</option><option>郵送</option></select>
+      <p class="ds-help">よく選ばれる「メール」を初期値に設定済み</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-multistep">
+      <p class="ds-small">このフォームはA4で3ページ相当のため、3ステップに分割されています。</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-focus-behavior">
+      <p class="ds-small">※ 入力中の自動フォーカス移動は、「次へ」ボタン押下時のみ発生します。</p>
+    </div>
+
+    <div class="ds-actions">
+      <button class="ds-btn ds-btn-sec" data-anchor="s-save-draft">一時保存して中断</button>
+      <button class="ds-btn ds-btn-pri">次へ</button>
+    </div>
+  </div>
+</div>
+    
+      
+<div class="ds-global-note">
+  <details class="ds-details">
+    <summary>この画面に共通で適用されるUI原則（クリックで展開）</summary>
+    <div class="ds-global-grid">
+      <div data-anchor="s-responsive">📱 <strong>レスポンシブ対応</strong><p class="ds-small">スマホ／PC両対応</p></div>
+      <div data-anchor="s-designsys">🎨 <strong>デザインシステム準拠</strong><p class="ds-small">色・タイポ・コンポーネント統一</p></div>
+      <div data-anchor="s-consistency">📐 <strong>レイアウト一貫性</strong><p class="ds-small">機能・用語・操作が統一</p></div>
+      <div data-anchor="s-font-size">🔤 <strong>本文 16px 以上</strong><p class="ds-small">読みやすい本文サイズ</p></div>
+      <div data-anchor="s-contrast">🌓 <strong>コントラスト 4.5:1 以上</strong><p class="ds-small">判別しやすい配色</p></div>
+      <div data-anchor="s-differ">🔘 <strong>操作可能要素の差別化</strong><p class="ds-small">下線・枠線など色以外の手がかり</p></div>
+      <div data-anchor="s-letterspace">📏 <strong>文字間隔はCSS</strong><p class="ds-small">ホワイトスペース文字は使わない</p></div>
+      <div data-anchor="s-simple">📝 <strong>シンプルレイアウト</strong><p class="ds-small">縦配置基本、段組は避ける</p></div>
+      <div data-anchor="s-focus-ring">🟡 <strong>フォーカスインジケーター</strong><p class="ds-small">キーボード操作時に枠表示</p></div>
+      <div data-anchor="s-tap-target">👆 <strong>タップ44px以上</strong><p class="ds-small">操作しやすい大きさ</p></div>
+      <div data-anchor="s-keyboard">⌨️ <strong>キーボード操作対応</strong><p class="ds-small">Tab送りで全操作可能</p></div>
+      <div data-anchor="s-rightclick">🖱️ <strong>右クリック／選択許容</strong><p class="ds-small">コピー・テキスト選択OK</p></div>
+      <div data-anchor="s-gesture">👉 <strong>シンプルなジェスチャー</strong><p class="ds-small">複雑なスワイプの代替あり</p></div>
+      <div data-anchor="s-click-menu">👇 <strong>クリック起点のメニュー</strong><p class="ds-small">マウスオーバー表示は避ける</p></div>
+      <div data-anchor="s-video">▶️ <strong>自動再生しない</strong><p class="ds-small">ユーザー操作で動作開始</p></div>
+      <div data-anchor="s-external">🔗 <strong>外部リンク明示</strong><p class="ds-small">別ドメイン遷移をアイコンで表示</p></div>
+      <div data-anchor="s-help-fab">❓ <strong>ヘルプ動線</strong><p class="ds-small">右下のヘルプボタン常設</p></div>
+    </div>
+  </details>
+</div>
+
+      <div class="ds-fab" data-anchor="s-help-fab" title="ヘルプ">?</div>
+    </section>
+<section class="screen web-screen" id="screen-web-form-address" data-screen="form-address" data-device="web" hidden>
+      
+<div class="ds-card">
+  <div class="ds-stepper" data-anchor="s-stepper">
+    <span class="ds-step is-done">✓ 申請内容</span>
+    <span class="ds-step is-done">✓ 基本情報</span>
+    <span class="ds-step is-active">3. 住所・連絡先</span>
+    <span class="ds-step">4. 書類</span>
+    <span class="ds-step">5. 確認</span>
+  </div>
+
+  <h1 class="ds-title" data-anchor="s-heading">住所・連絡先</h1>
+
+  <div class="ds-form">
+    <div class="ds-field" data-anchor="s-postal">
+      <label class="ds-label" data-anchor="s-label">郵便番号 <span class="ds-req" data-anchor="s-required">必須</span></label>
+      <div class="ds-row">
+        <input type="text" class="ds-input ds-input-w120" placeholder="1000001" data-anchor="s-autoformat">
+        <button type="button" class="ds-btn ds-btn-sec">住所検索</button>
+      </div>
+      <p class="ds-help" data-anchor="s-format-hint">ハイフンありでもなしでも可（自動補正）</p>
+    </div>
+
+    <div class="ds-field">
+      <label class="ds-label">都道府県 <span class="ds-req">必須</span></label>
+      <select class="ds-input"><option>東京都</option><option>神奈川県</option></select>
+    </div>
+
+    <div class="ds-field">
+      <label class="ds-label">市区町村（郡）</label>
+      <select class="ds-input"><option>千代田区</option></select>
+    </div>
+
+    <div class="ds-field" data-anchor="s-example">
+      <label class="ds-label">町名および番地以下 <span class="ds-req">必須</span></label>
+      <input type="text" class="ds-input" data-anchor="s-widths">
+      <p class="ds-help">例：霞が関1-2-3</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-selector">
+      <label class="ds-label">国番号（海外連絡先用） <span class="ds-opt">任意</span></label>
+      <select class="ds-input"><option>+81 日本</option><option>+1 アメリカ</option><option>+86 中国</option></select>
+      <p class="ds-help">コード表を見ずにセレクターで選択可能</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-corp">
+      <label class="ds-label">法人情報（法人申請の場合）</label>
+      <input type="text" class="ds-input" placeholder="法人番号（13桁）">
+      <input type="text" class="ds-input" placeholder="商号または名称" style="margin-top:8px">
+      <input type="text" class="ds-input" placeholder="商号または名称（カタカナ）" style="margin-top:8px">
+      <p class="ds-help">法人番号入力時、商号・所在地は自動取得されます</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-default">
+      <label class="ds-label">連絡先優先度</label>
+      <select class="ds-input"><option selected>日中（9:00-17:00）</option><option>夜間</option></select>
+      <p class="ds-help">よく選ばれる時間帯がデフォルト</p>
+    </div>
+
+    <div class="ds-actions">
+      <button class="ds-btn ds-btn-sec" data-anchor="s-save-draft">一時保存して中断</button>
+      <button class="ds-btn ds-btn-pri">次へ</button>
+    </div>
+  </div>
+</div>
+    
+      
+<div class="ds-global-note">
+  <details class="ds-details">
+    <summary>この画面に共通で適用されるUI原則（クリックで展開）</summary>
+    <div class="ds-global-grid">
+      <div data-anchor="s-responsive">📱 <strong>レスポンシブ対応</strong><p class="ds-small">スマホ／PC両対応</p></div>
+      <div data-anchor="s-designsys">🎨 <strong>デザインシステム準拠</strong><p class="ds-small">色・タイポ・コンポーネント統一</p></div>
+      <div data-anchor="s-consistency">📐 <strong>レイアウト一貫性</strong><p class="ds-small">機能・用語・操作が統一</p></div>
+      <div data-anchor="s-font-size">🔤 <strong>本文 16px 以上</strong><p class="ds-small">読みやすい本文サイズ</p></div>
+      <div data-anchor="s-contrast">🌓 <strong>コントラスト 4.5:1 以上</strong><p class="ds-small">判別しやすい配色</p></div>
+      <div data-anchor="s-differ">🔘 <strong>操作可能要素の差別化</strong><p class="ds-small">下線・枠線など色以外の手がかり</p></div>
+      <div data-anchor="s-letterspace">📏 <strong>文字間隔はCSS</strong><p class="ds-small">ホワイトスペース文字は使わない</p></div>
+      <div data-anchor="s-simple">📝 <strong>シンプルレイアウト</strong><p class="ds-small">縦配置基本、段組は避ける</p></div>
+      <div data-anchor="s-focus-ring">🟡 <strong>フォーカスインジケーター</strong><p class="ds-small">キーボード操作時に枠表示</p></div>
+      <div data-anchor="s-tap-target">👆 <strong>タップ44px以上</strong><p class="ds-small">操作しやすい大きさ</p></div>
+      <div data-anchor="s-keyboard">⌨️ <strong>キーボード操作対応</strong><p class="ds-small">Tab送りで全操作可能</p></div>
+      <div data-anchor="s-rightclick">🖱️ <strong>右クリック／選択許容</strong><p class="ds-small">コピー・テキスト選択OK</p></div>
+      <div data-anchor="s-gesture">👉 <strong>シンプルなジェスチャー</strong><p class="ds-small">複雑なスワイプの代替あり</p></div>
+      <div data-anchor="s-click-menu">👇 <strong>クリック起点のメニュー</strong><p class="ds-small">マウスオーバー表示は避ける</p></div>
+      <div data-anchor="s-video">▶️ <strong>自動再生しない</strong><p class="ds-small">ユーザー操作で動作開始</p></div>
+      <div data-anchor="s-external">🔗 <strong>外部リンク明示</strong><p class="ds-small">別ドメイン遷移をアイコンで表示</p></div>
+      <div data-anchor="s-help-fab">❓ <strong>ヘルプ動線</strong><p class="ds-small">右下のヘルプボタン常設</p></div>
+    </div>
+  </details>
+</div>
+
+      <div class="ds-fab" data-anchor="s-help-fab" title="ヘルプ">?</div>
+    </section>
+<section class="screen web-screen" id="screen-web-form-upload" data-screen="form-upload" data-device="web" hidden>
+      
+<div class="ds-card">
+  <div class="ds-stepper" data-anchor="s-stepper">
+    <span class="ds-step is-done">✓ 申請内容</span>
+    <span class="ds-step is-done">✓ 基本情報</span>
+    <span class="ds-step is-done">✓ 住所</span>
+    <span class="ds-step is-active">4. 書類</span>
+    <span class="ds-step">5. 確認</span>
+  </div>
+
+  <h1 class="ds-title" data-anchor="s-heading">書類のアップロード</h1>
+
+  <div class="ds-form">
+    <div class="ds-field" data-anchor="s-upload">
+      <label class="ds-label" data-anchor="s-label">本人確認書類 <span class="ds-req">必須</span></label>
+      <div class="ds-dropzone">
+        <div class="ds-dropzone-icon">📎</div>
+        <p>ここにファイルをドロップ</p>
+        <p class="ds-small" data-anchor="s-upload-alt">または</p>
+        <button type="button" class="ds-btn ds-btn-sec" data-anchor="s-dnd-alt">ファイルを選択</button>
+        <p class="ds-small">JPEG / PNG / PDF（最大5MB、複数選択可）</p>
+      </div>
+    </div>
+
+    <div class="ds-field">
+      <label class="ds-label">提出方法</label>
+      <div class="ds-radio-group">
+        <label><input type="radio" name="method" checked>その場でアップロード</label>
+        <label><input type="radio" name="method">郵送で提出</label>
+      </div>
+      <p class="ds-help">※ 選択に応じて次ステップが変わります</p>
+    </div>
+
+    <div class="ds-actions">
+      <button class="ds-btn ds-btn-sec" data-anchor="s-save-draft">一時保存して中断</button>
+      <button class="ds-btn ds-btn-pri">次へ</button>
+    </div>
+  </div>
+</div>
+    
+      
+<div class="ds-global-note">
+  <details class="ds-details">
+    <summary>この画面に共通で適用されるUI原則（クリックで展開）</summary>
+    <div class="ds-global-grid">
+      <div data-anchor="s-responsive">📱 <strong>レスポンシブ対応</strong><p class="ds-small">スマホ／PC両対応</p></div>
+      <div data-anchor="s-designsys">🎨 <strong>デザインシステム準拠</strong><p class="ds-small">色・タイポ・コンポーネント統一</p></div>
+      <div data-anchor="s-consistency">📐 <strong>レイアウト一貫性</strong><p class="ds-small">機能・用語・操作が統一</p></div>
+      <div data-anchor="s-font-size">🔤 <strong>本文 16px 以上</strong><p class="ds-small">読みやすい本文サイズ</p></div>
+      <div data-anchor="s-contrast">🌓 <strong>コントラスト 4.5:1 以上</strong><p class="ds-small">判別しやすい配色</p></div>
+      <div data-anchor="s-differ">🔘 <strong>操作可能要素の差別化</strong><p class="ds-small">下線・枠線など色以外の手がかり</p></div>
+      <div data-anchor="s-letterspace">📏 <strong>文字間隔はCSS</strong><p class="ds-small">ホワイトスペース文字は使わない</p></div>
+      <div data-anchor="s-simple">📝 <strong>シンプルレイアウト</strong><p class="ds-small">縦配置基本、段組は避ける</p></div>
+      <div data-anchor="s-focus-ring">🟡 <strong>フォーカスインジケーター</strong><p class="ds-small">キーボード操作時に枠表示</p></div>
+      <div data-anchor="s-tap-target">👆 <strong>タップ44px以上</strong><p class="ds-small">操作しやすい大きさ</p></div>
+      <div data-anchor="s-keyboard">⌨️ <strong>キーボード操作対応</strong><p class="ds-small">Tab送りで全操作可能</p></div>
+      <div data-anchor="s-rightclick">🖱️ <strong>右クリック／選択許容</strong><p class="ds-small">コピー・テキスト選択OK</p></div>
+      <div data-anchor="s-gesture">👉 <strong>シンプルなジェスチャー</strong><p class="ds-small">複雑なスワイプの代替あり</p></div>
+      <div data-anchor="s-click-menu">👇 <strong>クリック起点のメニュー</strong><p class="ds-small">マウスオーバー表示は避ける</p></div>
+      <div data-anchor="s-video">▶️ <strong>自動再生しない</strong><p class="ds-small">ユーザー操作で動作開始</p></div>
+      <div data-anchor="s-external">🔗 <strong>外部リンク明示</strong><p class="ds-small">別ドメイン遷移をアイコンで表示</p></div>
+      <div data-anchor="s-help-fab">❓ <strong>ヘルプ動線</strong><p class="ds-small">右下のヘルプボタン常設</p></div>
+    </div>
+  </details>
+</div>
+
+      <div class="ds-fab" data-anchor="s-help-fab" title="ヘルプ">?</div>
+    </section>
+<section class="screen web-screen" id="screen-web-confirm" data-screen="confirm" data-device="web" hidden>
+      
+<div class="ds-card">
+  <div class="ds-stepper" data-anchor="s-stepper">
+    <span class="ds-step is-done">✓ 申請内容</span>
+    <span class="ds-step is-done">✓ 基本情報</span>
+    <span class="ds-step is-done">✓ 住所</span>
+    <span class="ds-step is-done">✓ 書類</span>
+    <span class="ds-step is-active">5. 確認</span>
+  </div>
+
+  <h1 class="ds-title" data-anchor="s-heading">ご入力内容の確認</h1>
+  <p class="ds-lead" data-anchor="s-review">送信前に内容をご確認ください。修正が必要な場合は「修正する」ボタンからご変更いただけます。</p>
+
+  <div class="ds-review">
+    <div class="ds-review-row">
+      <span class="ds-review-label">氏名</span>
+      <span class="ds-review-value">山田 太郎</span>
+    </div>
+    <div class="ds-review-row">
+      <span class="ds-review-label">氏名（カナ）</span>
+      <span class="ds-review-value">ヤマダ タロウ</span>
+    </div>
+    <div class="ds-review-row">
+      <span class="ds-review-label">生年月日</span>
+      <span class="ds-review-value">昭和60年4月15日</span>
+    </div>
+    <div class="ds-review-row">
+      <span class="ds-review-label">住所</span>
+      <span class="ds-review-value">〒100-0001 東京都千代田区霞が関1-2-3</span>
+    </div>
+    <div class="ds-review-action">
+      <button type="button" class="ds-btn ds-btn-sec">入力内容を修正する</button>
+    </div>
+  </div>
+
+  <div class="ds-alert ds-alert-warn" data-anchor="s-esign">
+    <strong>■ 電子署名について</strong>
+    <p>次へ進むと電子署名を実施します。これは本申請を本人が行ったことを証明する法的効力のある操作です。</p>
+  </div>
+
+  <div class="ds-alert ds-alert-warn" data-anchor="s-undo">
+    <strong>■ 送信後の取り消しについて</strong>
+    <p>送信後の取り消しは受付後10分以内に限り、マイページから可能です。</p>
+  </div>
+
+  <div class="ds-modal-demo" data-anchor="s-modal">
+    <div class="ds-modal-box">
+      <h3>送信してもよろしいですか？</h3>
+      <p class="ds-small">電子署名が実行されます。</p>
+      <div class="ds-modal-actions">
+        <button class="ds-btn ds-btn-sec">キャンセル</button>
+        <button class="ds-btn ds-btn-pri">送信する</button>
+      </div>
+    </div>
+    <p class="ds-small">↑ 送信ボタン押下時に表示される確認ダイアログ</p>
+  </div>
+
+  <div class="ds-loading" data-anchor="s-loading">
+    <div class="ds-spinner"></div>
+    <span>送信中...（処理に時間がかかる場合があります）</span>
+  </div>
+
+  <div class="ds-actions">
+    <button class="ds-btn ds-btn-sec">戻る</button>
+    <button class="ds-btn ds-btn-pri">送信する</button>
+  </div>
+</div>
+    
+      
+<div class="ds-global-note">
+  <details class="ds-details">
+    <summary>この画面に共通で適用されるUI原則（クリックで展開）</summary>
+    <div class="ds-global-grid">
+      <div data-anchor="s-responsive">📱 <strong>レスポンシブ対応</strong><p class="ds-small">スマホ／PC両対応</p></div>
+      <div data-anchor="s-designsys">🎨 <strong>デザインシステム準拠</strong><p class="ds-small">色・タイポ・コンポーネント統一</p></div>
+      <div data-anchor="s-consistency">📐 <strong>レイアウト一貫性</strong><p class="ds-small">機能・用語・操作が統一</p></div>
+      <div data-anchor="s-font-size">🔤 <strong>本文 16px 以上</strong><p class="ds-small">読みやすい本文サイズ</p></div>
+      <div data-anchor="s-contrast">🌓 <strong>コントラスト 4.5:1 以上</strong><p class="ds-small">判別しやすい配色</p></div>
+      <div data-anchor="s-differ">🔘 <strong>操作可能要素の差別化</strong><p class="ds-small">下線・枠線など色以外の手がかり</p></div>
+      <div data-anchor="s-letterspace">📏 <strong>文字間隔はCSS</strong><p class="ds-small">ホワイトスペース文字は使わない</p></div>
+      <div data-anchor="s-simple">📝 <strong>シンプルレイアウト</strong><p class="ds-small">縦配置基本、段組は避ける</p></div>
+      <div data-anchor="s-focus-ring">🟡 <strong>フォーカスインジケーター</strong><p class="ds-small">キーボード操作時に枠表示</p></div>
+      <div data-anchor="s-tap-target">👆 <strong>タップ44px以上</strong><p class="ds-small">操作しやすい大きさ</p></div>
+      <div data-anchor="s-keyboard">⌨️ <strong>キーボード操作対応</strong><p class="ds-small">Tab送りで全操作可能</p></div>
+      <div data-anchor="s-rightclick">🖱️ <strong>右クリック／選択許容</strong><p class="ds-small">コピー・テキスト選択OK</p></div>
+      <div data-anchor="s-gesture">👉 <strong>シンプルなジェスチャー</strong><p class="ds-small">複雑なスワイプの代替あり</p></div>
+      <div data-anchor="s-click-menu">👇 <strong>クリック起点のメニュー</strong><p class="ds-small">マウスオーバー表示は避ける</p></div>
+      <div data-anchor="s-video">▶️ <strong>自動再生しない</strong><p class="ds-small">ユーザー操作で動作開始</p></div>
+      <div data-anchor="s-external">🔗 <strong>外部リンク明示</strong><p class="ds-small">別ドメイン遷移をアイコンで表示</p></div>
+      <div data-anchor="s-help-fab">❓ <strong>ヘルプ動線</strong><p class="ds-small">右下のヘルプボタン常設</p></div>
+    </div>
+  </details>
+</div>
+
+      <div class="ds-fab" data-anchor="s-help-fab" title="ヘルプ">?</div>
+    </section>
+<section class="screen web-screen" id="screen-web-error" data-screen="error" data-device="web" hidden>
+      
+<div class="ds-card">
+  <h1 class="ds-title">入力エラーが発生しました</h1>
+
+  <div class="ds-alert ds-alert-err" data-anchor="s-err-summary">
+    <strong>■ 入力内容に2件のエラーがあります</strong>
+    <ul>
+      <li><a class="ds-link" href="#">メールアドレス</a>：正しい形式で入力してください</li>
+      <li><a class="ds-link" href="#">生年月日</a>：入力できない日付が選択されています</li>
+    </ul>
+  </div>
+
+  <div class="ds-form">
+    <div class="ds-field" data-anchor="s-err-highlight">
+      <label class="ds-label">メールアドレス</label>
+      <input type="text" class="ds-input ds-input-err" value="abc">
+      <p class="ds-err-msg" data-anchor="s-err-clear">「@」が含まれていません。正しい形式は「example@domain.jp」です。</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-impossible">
+      <label class="ds-label">生年月日</label>
+      <input type="text" class="ds-input ds-input-err" value="明治1年1月1日">
+      <p class="ds-err-msg">140年以上前の日付は入力できません。正しい生年月日を入力してください。</p>
+    </div>
+
+    <div class="ds-field" data-anchor="s-err-self">
+      <p class="ds-help">よくあるエラーの解決方法は <a class="ds-link" href="#">こちらのFAQ</a> をご覧ください（管理者への問い合わせ不要）。</p>
+    </div>
+  </div>
+
+  <div class="ds-alert ds-alert-info" data-anchor="s-timeout">
+    <strong>■ セッション残り時間</strong>
+    <p>残り 2:00 です。<button class="ds-btn ds-btn-sec ds-btn-sm">時間を延長する</button></p>
+  </div>
+
+  <div class="ds-alert ds-alert-info" data-anchor="s-reload">
+    <strong>■ リロード／ブラウザバック対応</strong>
+    <p>ページを再読み込みしても入力内容は保持され、エラーは発生しません。</p>
+  </div>
+
+  <div class="ds-actions">
+    <button class="ds-btn ds-btn-pri">修正して再送信</button>
+  </div>
+</div>
+    
+      
+<div class="ds-global-note">
+  <details class="ds-details">
+    <summary>この画面に共通で適用されるUI原則（クリックで展開）</summary>
+    <div class="ds-global-grid">
+      <div data-anchor="s-responsive">📱 <strong>レスポンシブ対応</strong><p class="ds-small">スマホ／PC両対応</p></div>
+      <div data-anchor="s-designsys">🎨 <strong>デザインシステム準拠</strong><p class="ds-small">色・タイポ・コンポーネント統一</p></div>
+      <div data-anchor="s-consistency">📐 <strong>レイアウト一貫性</strong><p class="ds-small">機能・用語・操作が統一</p></div>
+      <div data-anchor="s-font-size">🔤 <strong>本文 16px 以上</strong><p class="ds-small">読みやすい本文サイズ</p></div>
+      <div data-anchor="s-contrast">🌓 <strong>コントラスト 4.5:1 以上</strong><p class="ds-small">判別しやすい配色</p></div>
+      <div data-anchor="s-differ">🔘 <strong>操作可能要素の差別化</strong><p class="ds-small">下線・枠線など色以外の手がかり</p></div>
+      <div data-anchor="s-letterspace">📏 <strong>文字間隔はCSS</strong><p class="ds-small">ホワイトスペース文字は使わない</p></div>
+      <div data-anchor="s-simple">📝 <strong>シンプルレイアウト</strong><p class="ds-small">縦配置基本、段組は避ける</p></div>
+      <div data-anchor="s-focus-ring">🟡 <strong>フォーカスインジケーター</strong><p class="ds-small">キーボード操作時に枠表示</p></div>
+      <div data-anchor="s-tap-target">👆 <strong>タップ44px以上</strong><p class="ds-small">操作しやすい大きさ</p></div>
+      <div data-anchor="s-keyboard">⌨️ <strong>キーボード操作対応</strong><p class="ds-small">Tab送りで全操作可能</p></div>
+      <div data-anchor="s-rightclick">🖱️ <strong>右クリック／選択許容</strong><p class="ds-small">コピー・テキスト選択OK</p></div>
+      <div data-anchor="s-gesture">👉 <strong>シンプルなジェスチャー</strong><p class="ds-small">複雑なスワイプの代替あり</p></div>
+      <div data-anchor="s-click-menu">👇 <strong>クリック起点のメニュー</strong><p class="ds-small">マウスオーバー表示は避ける</p></div>
+      <div data-anchor="s-video">▶️ <strong>自動再生しない</strong><p class="ds-small">ユーザー操作で動作開始</p></div>
+      <div data-anchor="s-external">🔗 <strong>外部リンク明示</strong><p class="ds-small">別ドメイン遷移をアイコンで表示</p></div>
+      <div data-anchor="s-help-fab">❓ <strong>ヘルプ動線</strong><p class="ds-small">右下のヘルプボタン常設</p></div>
+    </div>
+  </details>
+</div>
+
+      <div class="ds-fab" data-anchor="s-help-fab" title="ヘルプ">?</div>
+    </section>
+<section class="screen web-screen" id="screen-web-complete" data-screen="complete" data-device="web" hidden>
+      
+<div class="ds-card">
+  <div class="ds-complete-icon">✓</div>
+  <h1 class="ds-title" data-anchor="s-heading">送信が完了しました</h1>
+
+  <div class="ds-alert ds-alert-info" data-anchor="s-email-confirm">
+    <strong>■ 確認メールをお送りしました</strong>
+    <p>ご登録のメールアドレスへ、送信内容を記載した完了通知メールをお送りしました。内容はあとからも確認できます。</p>
+    <p class="ds-small">受付番号：<strong>R8-0419-0001</strong></p>
+  </div>
+
+  <div class="ds-section">
+    <h2>次にできること</h2>
+    <ul>
+      <li><a class="ds-link" href="#" data-anchor="s-link-text">申請状況を確認する</a></li>
+      <li><a class="ds-link" href="#">他の手続きを始める</a></li>
+      <li><a class="ds-link" href="#">マイナポータル（外部サイト） ↗</a></li>
+    </ul>
+  </div>
+
+  <div class="ds-toast-demo" data-anchor="s-toast">
+    <div class="ds-toast">保存しました</div>
+    <p class="ds-small">↑ 重要度の低い通知はトーストで表示</p>
+  </div>
+
+  <div class="ds-loading" data-anchor="s-loading">
+    <div class="ds-spinner"></div>
+    <span>関連情報を取得中...</span>
+  </div>
+
+  <div class="ds-actions">
+    <button class="ds-btn ds-btn-pri">トップページへ戻る</button>
+  </div>
+</div>
+    
+      
+<div class="ds-global-note">
+  <details class="ds-details">
+    <summary>この画面に共通で適用されるUI原則（クリックで展開）</summary>
+    <div class="ds-global-grid">
+      <div data-anchor="s-responsive">📱 <strong>レスポンシブ対応</strong><p class="ds-small">スマホ／PC両対応</p></div>
+      <div data-anchor="s-designsys">🎨 <strong>デザインシステム準拠</strong><p class="ds-small">色・タイポ・コンポーネント統一</p></div>
+      <div data-anchor="s-consistency">📐 <strong>レイアウト一貫性</strong><p class="ds-small">機能・用語・操作が統一</p></div>
+      <div data-anchor="s-font-size">🔤 <strong>本文 16px 以上</strong><p class="ds-small">読みやすい本文サイズ</p></div>
+      <div data-anchor="s-contrast">🌓 <strong>コントラスト 4.5:1 以上</strong><p class="ds-small">判別しやすい配色</p></div>
+      <div data-anchor="s-differ">🔘 <strong>操作可能要素の差別化</strong><p class="ds-small">下線・枠線など色以外の手がかり</p></div>
+      <div data-anchor="s-letterspace">📏 <strong>文字間隔はCSS</strong><p class="ds-small">ホワイトスペース文字は使わない</p></div>
+      <div data-anchor="s-simple">📝 <strong>シンプルレイアウト</strong><p class="ds-small">縦配置基本、段組は避ける</p></div>
+      <div data-anchor="s-focus-ring">🟡 <strong>フォーカスインジケーター</strong><p class="ds-small">キーボード操作時に枠表示</p></div>
+      <div data-anchor="s-tap-target">👆 <strong>タップ44px以上</strong><p class="ds-small">操作しやすい大きさ</p></div>
+      <div data-anchor="s-keyboard">⌨️ <strong>キーボード操作対応</strong><p class="ds-small">Tab送りで全操作可能</p></div>
+      <div data-anchor="s-rightclick">🖱️ <strong>右クリック／選択許容</strong><p class="ds-small">コピー・テキスト選択OK</p></div>
+      <div data-anchor="s-gesture">👉 <strong>シンプルなジェスチャー</strong><p class="ds-small">複雑なスワイプの代替あり</p></div>
+      <div data-anchor="s-click-menu">👇 <strong>クリック起点のメニュー</strong><p class="ds-small">マウスオーバー表示は避ける</p></div>
+      <div data-anchor="s-video">▶️ <strong>自動再生しない</strong><p class="ds-small">ユーザー操作で動作開始</p></div>
+      <div data-anchor="s-external">🔗 <strong>外部リンク明示</strong><p class="ds-small">別ドメイン遷移をアイコンで表示</p></div>
+      <div data-anchor="s-help-fab">❓ <strong>ヘルプ動線</strong><p class="ds-small">右下のヘルプボタン常設</p></div>
+    </div>
+  </details>
+</div>
+
+      <div class="ds-fab" data-anchor="s-help-fab" title="ヘルプ">?</div>
+    </section>
+<!-- MOBILE SECTIONS START -->
+<section class="screen mobile-screen" data-screen="intro" data-device="mobile" hidden>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-viewport">
+      
+    <div class="ios-status">
+      <span class="ios-time">9:41</span>
+      <span class="ios-icons"><span class="ios-signal">●●●●</span> <span class="ios-wifi">􀙇</span> <span class="ios-battery">􀛨</span></span>
+    </div>
+      
+    <div class="ios-navbar">
+      <button class="ios-back" type="button">‹ 戻る</button>
+      <div class="ios-navbar-title">フォーム導入</div>
+      <span class="ios-help" data-anchor="s-help-fab" title="ヘルプ">?</span>
+      
+    </div>
+      <div class="ios-scroll">
+        
+    <div class="ios-stepper" data-anchor="s-stepper">
+      <span class="ios-step is-active">1 申請</span>
+      <span class="ios-step">2 入力</span>
+      <span class="ios-step">3 確認</span>
+      <span class="ios-step">4 完了</span>
+    </div>
+
+    <h1 class="ios-screen-title" data-anchor="s-heading">住民票の写し 交付申請</h1>
+
+    <div class="ios-group">
+      <div class="ios-row ios-row-block" data-anchor="s-eligibility">
+        <div class="ios-row-title">■ 利用できる方</div>
+        <div class="ios-row-desc">本市に住民登録のある方ご本人、またはその同一世帯の方</div>
+      </div>
+      <div class="ios-row ios-row-block" data-anchor="s-documents">
+        <div class="ios-row-title">■ 必要な書類</div>
+        <div class="ios-row-desc">マイナンバーカード／本人確認書類</div>
+      </div>
+      <div class="ios-row ios-row-block" data-anchor="s-hardware">
+        <div class="ios-row-title">■ ご利用環境</div>
+        <div class="ios-row-desc">ICカードリーダー／マイナポータルアプリ</div>
+      </div>
+      <div class="ios-row ios-row-block ios-row-warn" data-anchor="s-hours">
+        <div class="ios-row-title">⚠ 利用時間</div>
+        <div class="ios-row-desc">平日 8:30〜17:15（土日祝休止）</div>
+      </div>
+    </div>
+
+    <div class="ios-section" data-anchor="s-terms">
+      <div class="ios-section-hd">主な用語について</div>
+      <div class="ios-card">
+        本申請では <span class="ios-tip">署名用電子証明書</span> をご利用いただきます。
+        <a class="ios-link" href="#" data-anchor="s-link-text">用語集ページを見る</a>
+      </div>
+    </div>
+
+    <div class="ios-section" data-anchor="s-flowchart">
+      <div class="ios-section-hd">申請までの流れ</div>
+      <div class="ios-flow">
+        <div class="ios-flow-node">利用資格確認</div>
+        <div class="ios-flow-arrow">↓</div>
+        <div class="ios-flow-node">個人／法人 判定</div>
+        <div class="ios-flow-arrow">↓</div>
+        <div class="ios-flow-node">該当フォームへ</div>
+      </div>
+    </div>
+
+    <div class="ios-url-bar" data-anchor="s-bookmark">
+      <span class="ios-url-icon">🔗</span>
+      <span class="ios-url-code">example.city.jp/apply/juminhyo</span>
+      <span class="ios-url-note">ブックマーク可能</span>
+    </div>
+
+    <button class="ios-btn ios-btn-pri">申請を開始する</button>
+    
+        
+    <details class="ios-sheet">
+      <summary class="ios-sheet-summary">共通UI原則を表示</summary>
+      <div class="ios-sheet-body">
+        
+        <div class="ios-principle" data-anchor="s-responsive">
+          <span class="ios-principle-icon">📱</span>
+          <div class="ios-principle-text"><strong>レスポンシブ対応</strong><p>スマホ／PC両対応</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-designsys">
+          <span class="ios-principle-icon">🎨</span>
+          <div class="ios-principle-text"><strong>デザインシステム準拠</strong><p>色・タイポ・コンポーネント統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-consistency">
+          <span class="ios-principle-icon">📐</span>
+          <div class="ios-principle-text"><strong>レイアウト一貫性</strong><p>機能・用語・操作が統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-font-size">
+          <span class="ios-principle-icon">🔤</span>
+          <div class="ios-principle-text"><strong>本文 16px 以上</strong><p>読みやすい本文サイズ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-contrast">
+          <span class="ios-principle-icon">🌓</span>
+          <div class="ios-principle-text"><strong>コントラスト 4.5:1 以上</strong><p>判別しやすい配色</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-differ">
+          <span class="ios-principle-icon">🔘</span>
+          <div class="ios-principle-text"><strong>操作可能要素の差別化</strong><p>下線・枠線など色以外の手がかり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-letterspace">
+          <span class="ios-principle-icon">📏</span>
+          <div class="ios-principle-text"><strong>文字間隔はCSS</strong><p>ホワイトスペース文字は使わない</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-simple">
+          <span class="ios-principle-icon">📝</span>
+          <div class="ios-principle-text"><strong>シンプルレイアウト</strong><p>縦配置基本、段組は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-focus-ring">
+          <span class="ios-principle-icon">🟡</span>
+          <div class="ios-principle-text"><strong>フォーカスインジケーター</strong><p>キーボード操作時に枠表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-tap-target">
+          <span class="ios-principle-icon">👆</span>
+          <div class="ios-principle-text"><strong>タップ44px以上</strong><p>操作しやすい大きさ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-keyboard">
+          <span class="ios-principle-icon">⌨️</span>
+          <div class="ios-principle-text"><strong>キーボード操作対応</strong><p>Tab送りで全操作可能</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-rightclick">
+          <span class="ios-principle-icon">🖱️</span>
+          <div class="ios-principle-text"><strong>右クリック／選択許容</strong><p>コピー・テキスト選択OK</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-gesture">
+          <span class="ios-principle-icon">👉</span>
+          <div class="ios-principle-text"><strong>シンプルなジェスチャー</strong><p>複雑なスワイプの代替あり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-click-menu">
+          <span class="ios-principle-icon">👇</span>
+          <div class="ios-principle-text"><strong>クリック起点のメニュー</strong><p>マウスオーバー表示は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-video">
+          <span class="ios-principle-icon">▶️</span>
+          <div class="ios-principle-text"><strong>自動再生しない</strong><p>ユーザー操作で動作開始</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-external">
+          <span class="ios-principle-icon">🔗</span>
+          <div class="ios-principle-text"><strong>外部リンク明示</strong><p>別ドメイン遷移をアイコンで表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-help-fab">
+          <span class="ios-principle-icon">❓</span>
+          <div class="ios-principle-text"><strong>ヘルプ動線</strong><p>ヘルプボタン常設</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+      </div>
+    </details>
+      </div>
+      <div class="ios-home-indicator"></div>
+    </div>
+  </div>
+</section>
+<section class="screen mobile-screen" data-screen="login" data-device="mobile" hidden>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-viewport">
+      
+    <div class="ios-status">
+      <span class="ios-time">9:41</span>
+      <span class="ios-icons"><span class="ios-signal">●●●●</span> <span class="ios-wifi">􀙇</span> <span class="ios-battery">􀛨</span></span>
+    </div>
+      
+    <div class="ios-navbar">
+      <button class="ios-back" type="button">‹ 戻る</button>
+      <div class="ios-navbar-title">ログイン</div>
+      <span class="ios-help" data-anchor="s-help-fab" title="ヘルプ">?</span>
+      
+    </div>
+      <div class="ios-scroll">
+        
+    <h1 class="ios-screen-title">ログイン</h1>
+
+    <div class="ios-form-group" data-anchor="s-email-verify">
+      <label class="ios-label" data-anchor="s-label">メールアドレス <span class="ios-req" data-anchor="s-required">必須</span></label>
+      <input type="email" class="ios-input" placeholder="example@domain.jp">
+      <p class="ios-help" data-anchor="s-format-hint">登録時、確認メールを送信します（本人確認）</p>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-password">
+      <label class="ios-label">パスワード <span class="ios-req">必須</span></label>
+      <input type="password" class="ios-input" placeholder="パスワード">
+      <p class="ios-help">64文字以上、記号使用可、定期変更は不要</p>
+      <p class="ios-help" data-anchor="s-paste">※ コピー&ペースト対応</p>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-captcha">
+      <label class="ios-label">本人確認（ボット対策）</label>
+      <div class="ios-captcha">
+        <span class="ios-captcha-text">aB3x7Z</span>
+        <input type="text" class="ios-input ios-input-sm" placeholder="表示の文字を入力">
+      </div>
+      <div class="ios-captcha-alt">
+        <button class="ios-btn ios-btn-sec ios-btn-sm" type="button">SMSで認証</button>
+        <button class="ios-btn ios-btn-sec ios-btn-sm" type="button">音声で認証</button>
+      </div>
+    </div>
+
+    <button class="ios-btn ios-btn-pri" data-anchor="s-tap-target">ログイン</button>
+    
+        
+    <details class="ios-sheet">
+      <summary class="ios-sheet-summary">共通UI原則を表示</summary>
+      <div class="ios-sheet-body">
+        
+        <div class="ios-principle" data-anchor="s-responsive">
+          <span class="ios-principle-icon">📱</span>
+          <div class="ios-principle-text"><strong>レスポンシブ対応</strong><p>スマホ／PC両対応</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-designsys">
+          <span class="ios-principle-icon">🎨</span>
+          <div class="ios-principle-text"><strong>デザインシステム準拠</strong><p>色・タイポ・コンポーネント統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-consistency">
+          <span class="ios-principle-icon">📐</span>
+          <div class="ios-principle-text"><strong>レイアウト一貫性</strong><p>機能・用語・操作が統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-font-size">
+          <span class="ios-principle-icon">🔤</span>
+          <div class="ios-principle-text"><strong>本文 16px 以上</strong><p>読みやすい本文サイズ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-contrast">
+          <span class="ios-principle-icon">🌓</span>
+          <div class="ios-principle-text"><strong>コントラスト 4.5:1 以上</strong><p>判別しやすい配色</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-differ">
+          <span class="ios-principle-icon">🔘</span>
+          <div class="ios-principle-text"><strong>操作可能要素の差別化</strong><p>下線・枠線など色以外の手がかり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-letterspace">
+          <span class="ios-principle-icon">📏</span>
+          <div class="ios-principle-text"><strong>文字間隔はCSS</strong><p>ホワイトスペース文字は使わない</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-simple">
+          <span class="ios-principle-icon">📝</span>
+          <div class="ios-principle-text"><strong>シンプルレイアウト</strong><p>縦配置基本、段組は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-focus-ring">
+          <span class="ios-principle-icon">🟡</span>
+          <div class="ios-principle-text"><strong>フォーカスインジケーター</strong><p>キーボード操作時に枠表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-keyboard">
+          <span class="ios-principle-icon">⌨️</span>
+          <div class="ios-principle-text"><strong>キーボード操作対応</strong><p>Tab送りで全操作可能</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-rightclick">
+          <span class="ios-principle-icon">🖱️</span>
+          <div class="ios-principle-text"><strong>右クリック／選択許容</strong><p>コピー・テキスト選択OK</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-gesture">
+          <span class="ios-principle-icon">👉</span>
+          <div class="ios-principle-text"><strong>シンプルなジェスチャー</strong><p>複雑なスワイプの代替あり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-click-menu">
+          <span class="ios-principle-icon">👇</span>
+          <div class="ios-principle-text"><strong>クリック起点のメニュー</strong><p>マウスオーバー表示は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-video">
+          <span class="ios-principle-icon">▶️</span>
+          <div class="ios-principle-text"><strong>自動再生しない</strong><p>ユーザー操作で動作開始</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-external">
+          <span class="ios-principle-icon">🔗</span>
+          <div class="ios-principle-text"><strong>外部リンク明示</strong><p>別ドメイン遷移をアイコンで表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-help-fab">
+          <span class="ios-principle-icon">❓</span>
+          <div class="ios-principle-text"><strong>ヘルプ動線</strong><p>ヘルプボタン常設</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+      </div>
+    </details>
+      </div>
+      <div class="ios-home-indicator"></div>
+    </div>
+  </div>
+</section>
+<section class="screen mobile-screen" data-screen="form-personal" data-device="mobile" hidden>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-viewport">
+      
+    <div class="ios-status">
+      <span class="ios-time">9:41</span>
+      <span class="ios-icons"><span class="ios-signal">●●●●</span> <span class="ios-wifi">􀙇</span> <span class="ios-battery">􀛨</span></span>
+    </div>
+      
+    <div class="ios-navbar">
+      <button class="ios-back" type="button">‹ 戻る</button>
+      <div class="ios-navbar-title">基本情報入力</div>
+      <span class="ios-help" data-anchor="s-help-fab" title="ヘルプ">?</span>
+      <span class="ios-navbar-step">2 / 4</span>
+    </div>
+      <div class="ios-scroll">
+        
+    <div class="ios-stepper" data-anchor="s-stepper">
+      <span class="ios-step">1</span>
+      <span class="ios-step is-active">2 基本情報</span>
+      <span class="ios-step">3</span>
+      <span class="ios-step">4</span>
+    </div>
+    <h1 class="ios-screen-title" data-anchor="s-heading">基本情報の入力</h1>
+    <p class="ios-desc" data-anchor="s-simple">項目は縦に並べています。</p>
+
+    <div class="ios-form-group" data-anchor="s-branch">
+      <label class="ios-label">申請者区分</label>
+      <div class="ios-radio-group">
+        <label class="ios-radio"><input type="radio" name="k" checked> 個人</label>
+        <label class="ios-radio"><input type="radio" name="k"> 法人</label>
+        <label class="ios-radio"><input type="radio" name="k"> 個人事業主</label>
+      </div>
+      <p class="ios-help">選択に応じて次の入力項目を出し分けます</p>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-name">
+      <label class="ios-label" data-anchor="s-label">氏名 <span class="ios-req">必須</span></label>
+      <input type="text" class="ios-input" placeholder="山田 太郎">
+      <p class="ios-help">「氏」と「名」は単一フィールドです</p>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-middle">
+      <label class="ios-label">ミドルネーム・旧姓 <span class="ios-opt">任意</span></label>
+      <input type="text" class="ios-input" placeholder="（任意）">
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-furigana">
+      <label class="ios-label">氏名（カタカナ） <span class="ios-req">必須</span></label>
+      <input type="text" class="ios-input" placeholder="ヤマダ タロウ">
+      <p class="ios-help">文字種を括弧で明示しています</p>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-gender">
+      <label class="ios-label">性別</label>
+      <div class="ios-radio-group">
+        <label class="ios-radio"><input type="radio" name="g"> 男</label>
+        <label class="ios-radio"><input type="radio" name="g"> 女</label>
+        <label class="ios-radio"><input type="radio" name="g"> その他</label>
+        <label class="ios-radio"><input type="radio" name="g"> 回答しない</label>
+      </div>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-dob">
+      <label class="ios-label">生年月日 <span class="ios-req">必須</span></label>
+      <div class="ios-row-inline" data-anchor="s-direct-input">
+        <select class="ios-select"><option>令和</option><option>平成</option><option>昭和</option></select>
+        <input type="number" class="ios-input ios-input-xs" placeholder="年">
+        <input type="number" class="ios-input ios-input-xs" placeholder="月">
+        <input type="number" class="ios-input ios-input-xs" placeholder="日">
+      </div>
+      <p class="ios-help" data-anchor="s-format-hint">半角数字で入力してください</p>
+      <p class="ios-help" data-anchor="s-example">例: 令和 06 年 04 月 20 日</p>
+    </div>
+
+    <div class="ios-form-group">
+      <label class="ios-label" data-anchor="s-widths">電話番号</label>
+      <div class="ios-row-inline">
+        <input type="tel" class="ios-input ios-input-xs" value="090">
+        <input type="tel" class="ios-input ios-input-sm" value="1234">
+        <input type="tel" class="ios-input ios-input-sm" value="5678">
+      </div>
+    </div>
+
+    <div class="ios-form-group">
+      <label class="ios-label">申請理由</label>
+      <textarea class="ios-textarea" placeholder="50字以上で入力"></textarea>
+      <div class="ios-counter" data-anchor="s-counter">0 / 200 文字</div>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-reuse">
+      <label class="ios-label">以前の入力内容を再利用</label>
+      <label class="ios-toggle-row">
+        <span>前回の入力情報を読み込む</span>
+        <span class="ios-toggle"><input type="checkbox" checked><span class="ios-toggle-switch"></span></span>
+      </label>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-default">
+      <label class="ios-label">用途（中央値がデフォルト）</label>
+      <select class="ios-select">
+        <option>各種申請（最頻）</option>
+        <option>就職・転職</option>
+        <option>不動産契約</option>
+      </select>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-multistep">
+      <p class="ios-help">※ 用紙2ページ相当の入力を 4 ステップに分割しています</p>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-focus-behavior">
+      <p class="ios-help">フォーカスの自動移動は「次へ」ボタン押下時に実行されます</p>
+    </div>
+
+    <div class="ios-row-inline" data-anchor="s-save-draft">
+      <button class="ios-btn ios-btn-sec ios-btn-sm" type="button">一時保存</button>
+      <button class="ios-btn ios-btn-sec ios-btn-sm" type="button">中断して保存</button>
+    </div>
+
+    <button class="ios-btn ios-btn-pri">次へ進む</button>
+    
+        
+    <details class="ios-sheet">
+      <summary class="ios-sheet-summary">共通UI原則を表示</summary>
+      <div class="ios-sheet-body">
+        
+        <div class="ios-principle" data-anchor="s-responsive">
+          <span class="ios-principle-icon">📱</span>
+          <div class="ios-principle-text"><strong>レスポンシブ対応</strong><p>スマホ／PC両対応</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-designsys">
+          <span class="ios-principle-icon">🎨</span>
+          <div class="ios-principle-text"><strong>デザインシステム準拠</strong><p>色・タイポ・コンポーネント統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-consistency">
+          <span class="ios-principle-icon">📐</span>
+          <div class="ios-principle-text"><strong>レイアウト一貫性</strong><p>機能・用語・操作が統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-font-size">
+          <span class="ios-principle-icon">🔤</span>
+          <div class="ios-principle-text"><strong>本文 16px 以上</strong><p>読みやすい本文サイズ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-contrast">
+          <span class="ios-principle-icon">🌓</span>
+          <div class="ios-principle-text"><strong>コントラスト 4.5:1 以上</strong><p>判別しやすい配色</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-differ">
+          <span class="ios-principle-icon">🔘</span>
+          <div class="ios-principle-text"><strong>操作可能要素の差別化</strong><p>下線・枠線など色以外の手がかり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-letterspace">
+          <span class="ios-principle-icon">📏</span>
+          <div class="ios-principle-text"><strong>文字間隔はCSS</strong><p>ホワイトスペース文字は使わない</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-focus-ring">
+          <span class="ios-principle-icon">🟡</span>
+          <div class="ios-principle-text"><strong>フォーカスインジケーター</strong><p>キーボード操作時に枠表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-tap-target">
+          <span class="ios-principle-icon">👆</span>
+          <div class="ios-principle-text"><strong>タップ44px以上</strong><p>操作しやすい大きさ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-keyboard">
+          <span class="ios-principle-icon">⌨️</span>
+          <div class="ios-principle-text"><strong>キーボード操作対応</strong><p>Tab送りで全操作可能</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-rightclick">
+          <span class="ios-principle-icon">🖱️</span>
+          <div class="ios-principle-text"><strong>右クリック／選択許容</strong><p>コピー・テキスト選択OK</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-gesture">
+          <span class="ios-principle-icon">👉</span>
+          <div class="ios-principle-text"><strong>シンプルなジェスチャー</strong><p>複雑なスワイプの代替あり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-click-menu">
+          <span class="ios-principle-icon">👇</span>
+          <div class="ios-principle-text"><strong>クリック起点のメニュー</strong><p>マウスオーバー表示は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-video">
+          <span class="ios-principle-icon">▶️</span>
+          <div class="ios-principle-text"><strong>自動再生しない</strong><p>ユーザー操作で動作開始</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-external">
+          <span class="ios-principle-icon">🔗</span>
+          <div class="ios-principle-text"><strong>外部リンク明示</strong><p>別ドメイン遷移をアイコンで表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-help-fab">
+          <span class="ios-principle-icon">❓</span>
+          <div class="ios-principle-text"><strong>ヘルプ動線</strong><p>ヘルプボタン常設</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+      </div>
+    </details>
+      </div>
+      <div class="ios-home-indicator"></div>
+    </div>
+  </div>
+</section>
+<section class="screen mobile-screen" data-screen="form-address" data-device="mobile" hidden>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-viewport">
+      
+    <div class="ios-status">
+      <span class="ios-time">9:41</span>
+      <span class="ios-icons"><span class="ios-signal">●●●●</span> <span class="ios-wifi">􀙇</span> <span class="ios-battery">􀛨</span></span>
+    </div>
+      
+    <div class="ios-navbar">
+      <button class="ios-back" type="button">‹ 戻る</button>
+      <div class="ios-navbar-title">住所・連絡先</div>
+      <span class="ios-help" data-anchor="s-help-fab" title="ヘルプ">?</span>
+      <span class="ios-navbar-step">3 / 4</span>
+    </div>
+      <div class="ios-scroll">
+        
+    <div class="ios-stepper" data-anchor="s-stepper">
+      <span class="ios-step">1</span>
+      <span class="ios-step">2</span>
+      <span class="ios-step is-active">3 住所</span>
+      <span class="ios-step">4</span>
+    </div>
+    <h1 class="ios-screen-title" data-anchor="s-heading">住所・連絡先の入力</h1>
+
+    <div class="ios-form-group" data-anchor="s-postal">
+      <label class="ios-label" data-anchor="s-label">郵便番号 <span class="ios-req" data-anchor="s-required">必須</span></label>
+      <div class="ios-row-inline" data-anchor="s-autoformat">
+        <input type="text" class="ios-input ios-input-sm" placeholder="100-0001">
+        <button class="ios-btn ios-btn-sec ios-btn-sm" type="button">住所検索</button>
+      </div>
+      <p class="ios-help" data-anchor="s-format-hint">ハイフン有無どちらでもOK／半角数字で自動整形</p>
+      <p class="ios-help" data-anchor="s-example">例: 100-0001 または 1000001</p>
+    </div>
+
+    <div class="ios-form-group">
+      <label class="ios-label">都道府県</label>
+      <select class="ios-select" data-anchor="s-selector">
+        <option>選択してください</option>
+        <option>北海道</option>
+        <option>東京都</option>
+      </select>
+    </div>
+
+    <div class="ios-form-group">
+      <label class="ios-label">市区町村</label>
+      <input type="text" class="ios-input" value="千代田区">
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-widths">
+      <label class="ios-label">町名・番地以下</label>
+      <input type="text" class="ios-input" placeholder="千代田 1-1">
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-corp">
+      <label class="ios-label">法人番号（法人の場合）</label>
+      <input type="text" class="ios-input ios-input-sm" placeholder="13桁">
+      <p class="ios-help">法人番号で商号・所在地を自動取得します</p>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-default">
+      <label class="ios-label">連絡方法（デフォルトは最頻）</label>
+      <select class="ios-select">
+        <option>メール（最頻）</option>
+        <option>電話</option>
+        <option>郵送</option>
+      </select>
+    </div>
+
+    <div class="ios-row-inline" data-anchor="s-save-draft">
+      <button class="ios-btn ios-btn-sec ios-btn-sm" type="button">一時保存</button>
+    </div>
+    <button class="ios-btn ios-btn-pri">次へ進む</button>
+    
+        
+    <details class="ios-sheet">
+      <summary class="ios-sheet-summary">共通UI原則を表示</summary>
+      <div class="ios-sheet-body">
+        
+        <div class="ios-principle" data-anchor="s-responsive">
+          <span class="ios-principle-icon">📱</span>
+          <div class="ios-principle-text"><strong>レスポンシブ対応</strong><p>スマホ／PC両対応</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-designsys">
+          <span class="ios-principle-icon">🎨</span>
+          <div class="ios-principle-text"><strong>デザインシステム準拠</strong><p>色・タイポ・コンポーネント統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-consistency">
+          <span class="ios-principle-icon">📐</span>
+          <div class="ios-principle-text"><strong>レイアウト一貫性</strong><p>機能・用語・操作が統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-font-size">
+          <span class="ios-principle-icon">🔤</span>
+          <div class="ios-principle-text"><strong>本文 16px 以上</strong><p>読みやすい本文サイズ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-contrast">
+          <span class="ios-principle-icon">🌓</span>
+          <div class="ios-principle-text"><strong>コントラスト 4.5:1 以上</strong><p>判別しやすい配色</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-differ">
+          <span class="ios-principle-icon">🔘</span>
+          <div class="ios-principle-text"><strong>操作可能要素の差別化</strong><p>下線・枠線など色以外の手がかり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-letterspace">
+          <span class="ios-principle-icon">📏</span>
+          <div class="ios-principle-text"><strong>文字間隔はCSS</strong><p>ホワイトスペース文字は使わない</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-simple">
+          <span class="ios-principle-icon">📝</span>
+          <div class="ios-principle-text"><strong>シンプルレイアウト</strong><p>縦配置基本、段組は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-focus-ring">
+          <span class="ios-principle-icon">🟡</span>
+          <div class="ios-principle-text"><strong>フォーカスインジケーター</strong><p>キーボード操作時に枠表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-tap-target">
+          <span class="ios-principle-icon">👆</span>
+          <div class="ios-principle-text"><strong>タップ44px以上</strong><p>操作しやすい大きさ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-keyboard">
+          <span class="ios-principle-icon">⌨️</span>
+          <div class="ios-principle-text"><strong>キーボード操作対応</strong><p>Tab送りで全操作可能</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-rightclick">
+          <span class="ios-principle-icon">🖱️</span>
+          <div class="ios-principle-text"><strong>右クリック／選択許容</strong><p>コピー・テキスト選択OK</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-gesture">
+          <span class="ios-principle-icon">👉</span>
+          <div class="ios-principle-text"><strong>シンプルなジェスチャー</strong><p>複雑なスワイプの代替あり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-click-menu">
+          <span class="ios-principle-icon">👇</span>
+          <div class="ios-principle-text"><strong>クリック起点のメニュー</strong><p>マウスオーバー表示は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-video">
+          <span class="ios-principle-icon">▶️</span>
+          <div class="ios-principle-text"><strong>自動再生しない</strong><p>ユーザー操作で動作開始</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-external">
+          <span class="ios-principle-icon">🔗</span>
+          <div class="ios-principle-text"><strong>外部リンク明示</strong><p>別ドメイン遷移をアイコンで表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-help-fab">
+          <span class="ios-principle-icon">❓</span>
+          <div class="ios-principle-text"><strong>ヘルプ動線</strong><p>ヘルプボタン常設</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+      </div>
+    </details>
+      </div>
+      <div class="ios-home-indicator"></div>
+    </div>
+  </div>
+</section>
+<section class="screen mobile-screen" data-screen="form-upload" data-device="mobile" hidden>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-viewport">
+      
+    <div class="ios-status">
+      <span class="ios-time">9:41</span>
+      <span class="ios-icons"><span class="ios-signal">●●●●</span> <span class="ios-wifi">􀙇</span> <span class="ios-battery">􀛨</span></span>
+    </div>
+      
+    <div class="ios-navbar">
+      <button class="ios-back" type="button">‹ 戻る</button>
+      <div class="ios-navbar-title">書類アップロード</div>
+      <span class="ios-help" data-anchor="s-help-fab" title="ヘルプ">?</span>
+      <span class="ios-navbar-step">4 / 4</span>
+    </div>
+      <div class="ios-scroll">
+        
+    <div class="ios-stepper" data-anchor="s-stepper">
+      <span class="ios-step">1</span>
+      <span class="ios-step">2</span>
+      <span class="ios-step">3</span>
+      <span class="ios-step is-active">4 書類</span>
+    </div>
+    <h1 class="ios-screen-title" data-anchor="s-heading">書類のアップロード</h1>
+
+    <div class="ios-form-group" data-anchor="s-upload">
+      <label class="ios-label" data-anchor="s-label">本人確認書類 <span class="ios-req">必須</span></label>
+      <div class="ios-dropzone" data-anchor="s-dnd-alt">
+        <div class="ios-dropzone-icon">📤</div>
+        <div class="ios-dropzone-text">ファイルをここへ、またはタップして選択</div>
+      </div>
+      <div class="ios-row-inline" data-anchor="s-upload-alt">
+        <button class="ios-btn ios-btn-sec ios-btn-sm" type="button">📷 カメラから</button>
+        <button class="ios-btn ios-btn-sec ios-btn-sm" type="button">📁 ファイルから</button>
+      </div>
+      <p class="ios-help">PDF / JPG / PNG、1ファイル10MBまで</p>
+    </div>
+
+    <div class="ios-row-inline" data-anchor="s-save-draft">
+      <button class="ios-btn ios-btn-sec ios-btn-sm" type="button">一時保存</button>
+    </div>
+    <button class="ios-btn ios-btn-pri">確認画面へ</button>
+    
+        
+    <details class="ios-sheet">
+      <summary class="ios-sheet-summary">共通UI原則を表示</summary>
+      <div class="ios-sheet-body">
+        
+        <div class="ios-principle" data-anchor="s-responsive">
+          <span class="ios-principle-icon">📱</span>
+          <div class="ios-principle-text"><strong>レスポンシブ対応</strong><p>スマホ／PC両対応</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-designsys">
+          <span class="ios-principle-icon">🎨</span>
+          <div class="ios-principle-text"><strong>デザインシステム準拠</strong><p>色・タイポ・コンポーネント統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-consistency">
+          <span class="ios-principle-icon">📐</span>
+          <div class="ios-principle-text"><strong>レイアウト一貫性</strong><p>機能・用語・操作が統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-font-size">
+          <span class="ios-principle-icon">🔤</span>
+          <div class="ios-principle-text"><strong>本文 16px 以上</strong><p>読みやすい本文サイズ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-contrast">
+          <span class="ios-principle-icon">🌓</span>
+          <div class="ios-principle-text"><strong>コントラスト 4.5:1 以上</strong><p>判別しやすい配色</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-differ">
+          <span class="ios-principle-icon">🔘</span>
+          <div class="ios-principle-text"><strong>操作可能要素の差別化</strong><p>下線・枠線など色以外の手がかり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-letterspace">
+          <span class="ios-principle-icon">📏</span>
+          <div class="ios-principle-text"><strong>文字間隔はCSS</strong><p>ホワイトスペース文字は使わない</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-simple">
+          <span class="ios-principle-icon">📝</span>
+          <div class="ios-principle-text"><strong>シンプルレイアウト</strong><p>縦配置基本、段組は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-focus-ring">
+          <span class="ios-principle-icon">🟡</span>
+          <div class="ios-principle-text"><strong>フォーカスインジケーター</strong><p>キーボード操作時に枠表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-tap-target">
+          <span class="ios-principle-icon">👆</span>
+          <div class="ios-principle-text"><strong>タップ44px以上</strong><p>操作しやすい大きさ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-keyboard">
+          <span class="ios-principle-icon">⌨️</span>
+          <div class="ios-principle-text"><strong>キーボード操作対応</strong><p>Tab送りで全操作可能</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-rightclick">
+          <span class="ios-principle-icon">🖱️</span>
+          <div class="ios-principle-text"><strong>右クリック／選択許容</strong><p>コピー・テキスト選択OK</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-gesture">
+          <span class="ios-principle-icon">👉</span>
+          <div class="ios-principle-text"><strong>シンプルなジェスチャー</strong><p>複雑なスワイプの代替あり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-click-menu">
+          <span class="ios-principle-icon">👇</span>
+          <div class="ios-principle-text"><strong>クリック起点のメニュー</strong><p>マウスオーバー表示は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-video">
+          <span class="ios-principle-icon">▶️</span>
+          <div class="ios-principle-text"><strong>自動再生しない</strong><p>ユーザー操作で動作開始</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-external">
+          <span class="ios-principle-icon">🔗</span>
+          <div class="ios-principle-text"><strong>外部リンク明示</strong><p>別ドメイン遷移をアイコンで表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-help-fab">
+          <span class="ios-principle-icon">❓</span>
+          <div class="ios-principle-text"><strong>ヘルプ動線</strong><p>ヘルプボタン常設</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+      </div>
+    </details>
+      </div>
+      <div class="ios-home-indicator"></div>
+    </div>
+  </div>
+</section>
+<section class="screen mobile-screen" data-screen="confirm" data-device="mobile" hidden>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-viewport">
+      
+    <div class="ios-status">
+      <span class="ios-time">9:41</span>
+      <span class="ios-icons"><span class="ios-signal">●●●●</span> <span class="ios-wifi">􀙇</span> <span class="ios-battery">􀛨</span></span>
+    </div>
+      
+    <div class="ios-navbar">
+      <button class="ios-back" type="button">‹ 戻る</button>
+      <div class="ios-navbar-title">確認</div>
+      <span class="ios-help" data-anchor="s-help-fab" title="ヘルプ">?</span>
+      
+    </div>
+      <div class="ios-scroll">
+        
+    <div class="ios-stepper" data-anchor="s-stepper">
+      <span class="ios-step">1</span>
+      <span class="ios-step">2</span>
+      <span class="ios-step">3</span>
+      <span class="ios-step is-active">確認</span>
+    </div>
+    <h1 class="ios-screen-title" data-anchor="s-heading">入力内容の確認</h1>
+
+    <div class="ios-group" data-anchor="s-review">
+      <div class="ios-row"><span class="ios-row-k">氏名</span><span class="ios-row-v">山田 太郎</span><button class="ios-row-edit">編集</button></div>
+      <div class="ios-row"><span class="ios-row-k">生年月日</span><span class="ios-row-v">平成5年4月20日</span><button class="ios-row-edit">編集</button></div>
+      <div class="ios-row"><span class="ios-row-k">住所</span><span class="ios-row-v">東京都千代田区…</span><button class="ios-row-edit">編集</button></div>
+      <div class="ios-row"><span class="ios-row-k">本人確認書類</span><span class="ios-row-v">menkyo.pdf</span><button class="ios-row-edit">編集</button></div>
+    </div>
+
+    <div class="ios-alert ios-alert-info" data-anchor="s-esign">
+      <strong>電子署名について</strong>
+      <p>この申請は<strong>署名用電子証明書</strong>により電子署名され、書面と同等の効力を持ちます。</p>
+    </div>
+
+    <div class="ios-alert ios-alert-warn" data-anchor="s-undo">
+      <strong>送信前のご確認</strong>
+      <p>送信後の取り消しはできません。必要に応じて内容を修正してください。</p>
+    </div>
+
+    <button class="ios-btn ios-btn-pri" data-anchor="s-loading">
+      <span class="ios-spinner" aria-hidden="true"></span>署名して送信する
+    </button>
+
+    <div class="ios-modal-backdrop" data-anchor="s-modal" aria-hidden="true">
+      <dialog class="ios-modal" open>
+        <h2>送信してよろしいですか？</h2>
+        <p>送信後の取り消しはできません。</p>
+        <div class="ios-row-inline">
+          <button class="ios-btn ios-btn-sec ios-btn-sm">キャンセル</button>
+          <button class="ios-btn ios-btn-pri ios-btn-sm">送信する</button>
+        </div>
+      </dialog>
+    </div>
+    
+        
+    <details class="ios-sheet">
+      <summary class="ios-sheet-summary">共通UI原則を表示</summary>
+      <div class="ios-sheet-body">
+        
+        <div class="ios-principle" data-anchor="s-responsive">
+          <span class="ios-principle-icon">📱</span>
+          <div class="ios-principle-text"><strong>レスポンシブ対応</strong><p>スマホ／PC両対応</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-designsys">
+          <span class="ios-principle-icon">🎨</span>
+          <div class="ios-principle-text"><strong>デザインシステム準拠</strong><p>色・タイポ・コンポーネント統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-consistency">
+          <span class="ios-principle-icon">📐</span>
+          <div class="ios-principle-text"><strong>レイアウト一貫性</strong><p>機能・用語・操作が統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-font-size">
+          <span class="ios-principle-icon">🔤</span>
+          <div class="ios-principle-text"><strong>本文 16px 以上</strong><p>読みやすい本文サイズ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-contrast">
+          <span class="ios-principle-icon">🌓</span>
+          <div class="ios-principle-text"><strong>コントラスト 4.5:1 以上</strong><p>判別しやすい配色</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-differ">
+          <span class="ios-principle-icon">🔘</span>
+          <div class="ios-principle-text"><strong>操作可能要素の差別化</strong><p>下線・枠線など色以外の手がかり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-letterspace">
+          <span class="ios-principle-icon">📏</span>
+          <div class="ios-principle-text"><strong>文字間隔はCSS</strong><p>ホワイトスペース文字は使わない</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-simple">
+          <span class="ios-principle-icon">📝</span>
+          <div class="ios-principle-text"><strong>シンプルレイアウト</strong><p>縦配置基本、段組は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-focus-ring">
+          <span class="ios-principle-icon">🟡</span>
+          <div class="ios-principle-text"><strong>フォーカスインジケーター</strong><p>キーボード操作時に枠表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-tap-target">
+          <span class="ios-principle-icon">👆</span>
+          <div class="ios-principle-text"><strong>タップ44px以上</strong><p>操作しやすい大きさ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-keyboard">
+          <span class="ios-principle-icon">⌨️</span>
+          <div class="ios-principle-text"><strong>キーボード操作対応</strong><p>Tab送りで全操作可能</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-rightclick">
+          <span class="ios-principle-icon">🖱️</span>
+          <div class="ios-principle-text"><strong>右クリック／選択許容</strong><p>コピー・テキスト選択OK</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-gesture">
+          <span class="ios-principle-icon">👉</span>
+          <div class="ios-principle-text"><strong>シンプルなジェスチャー</strong><p>複雑なスワイプの代替あり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-click-menu">
+          <span class="ios-principle-icon">👇</span>
+          <div class="ios-principle-text"><strong>クリック起点のメニュー</strong><p>マウスオーバー表示は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-video">
+          <span class="ios-principle-icon">▶️</span>
+          <div class="ios-principle-text"><strong>自動再生しない</strong><p>ユーザー操作で動作開始</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-external">
+          <span class="ios-principle-icon">🔗</span>
+          <div class="ios-principle-text"><strong>外部リンク明示</strong><p>別ドメイン遷移をアイコンで表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-help-fab">
+          <span class="ios-principle-icon">❓</span>
+          <div class="ios-principle-text"><strong>ヘルプ動線</strong><p>ヘルプボタン常設</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+      </div>
+    </details>
+      </div>
+      <div class="ios-home-indicator"></div>
+    </div>
+  </div>
+</section>
+<section class="screen mobile-screen" data-screen="error" data-device="mobile" hidden>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-viewport">
+      
+    <div class="ios-status">
+      <span class="ios-time">9:41</span>
+      <span class="ios-icons"><span class="ios-signal">●●●●</span> <span class="ios-wifi">􀙇</span> <span class="ios-battery">􀛨</span></span>
+    </div>
+      
+    <div class="ios-navbar">
+      <button class="ios-back" type="button">‹ 戻る</button>
+      <div class="ios-navbar-title">エラー</div>
+      <span class="ios-help" data-anchor="s-help-fab" title="ヘルプ">?</span>
+      
+    </div>
+      <div class="ios-scroll">
+        
+    <h1 class="ios-screen-title">入力エラー</h1>
+
+    <div class="ios-alert ios-alert-err" data-anchor="s-err-summary">
+      <strong>⚠ 3件のエラーがあります</strong>
+      <ul>
+        <li>氏名（カタカナ）が未入力です</li>
+        <li>生年月日の形式が正しくありません</li>
+        <li>電話番号に全角が含まれています</li>
+      </ul>
+    </div>
+
+    <div class="ios-form-group ios-field-err" data-anchor="s-err-highlight">
+      <label class="ios-label">氏名（カタカナ）</label>
+      <input type="text" class="ios-input ios-input-err" value="">
+      <p class="ios-help ios-help-err" data-anchor="s-err-clear">⚠ 必須項目です。カタカナで入力してください。</p>
+    </div>
+
+    <div class="ios-form-group" data-anchor="s-impossible">
+      <label class="ios-label">生年月日</label>
+      <input type="text" class="ios-input" value="明治 1 年 13 月">
+      <p class="ios-help ios-help-err">⚠ 存在しない日付は入力できません</p>
+    </div>
+
+    <div class="ios-alert ios-alert-info" data-anchor="s-err-self">
+      <strong>解決方法</strong>
+      <p>赤枠の項目を修正して再度お試しください。管理者への問い合わせは不要です。</p>
+    </div>
+
+    <div class="ios-alert ios-alert-warn" data-anchor="s-timeout">
+      <strong>⏱ セッション延長</strong>
+      <p>あと 02:30 で入力が無効になります。</p>
+      <button class="ios-btn ios-btn-sec ios-btn-sm">30分延長する</button>
+    </div>
+
+    <div class="ios-row-block" data-anchor="s-reload">
+      <p class="ios-help">リロード・ブラウザバックしても入力内容は保持されます。</p>
+    </div>
+
+    <button class="ios-btn ios-btn-pri">修正して続ける</button>
+    
+        
+    <details class="ios-sheet">
+      <summary class="ios-sheet-summary">共通UI原則を表示</summary>
+      <div class="ios-sheet-body">
+        
+        <div class="ios-principle" data-anchor="s-responsive">
+          <span class="ios-principle-icon">📱</span>
+          <div class="ios-principle-text"><strong>レスポンシブ対応</strong><p>スマホ／PC両対応</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-designsys">
+          <span class="ios-principle-icon">🎨</span>
+          <div class="ios-principle-text"><strong>デザインシステム準拠</strong><p>色・タイポ・コンポーネント統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-consistency">
+          <span class="ios-principle-icon">📐</span>
+          <div class="ios-principle-text"><strong>レイアウト一貫性</strong><p>機能・用語・操作が統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-font-size">
+          <span class="ios-principle-icon">🔤</span>
+          <div class="ios-principle-text"><strong>本文 16px 以上</strong><p>読みやすい本文サイズ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-contrast">
+          <span class="ios-principle-icon">🌓</span>
+          <div class="ios-principle-text"><strong>コントラスト 4.5:1 以上</strong><p>判別しやすい配色</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-differ">
+          <span class="ios-principle-icon">🔘</span>
+          <div class="ios-principle-text"><strong>操作可能要素の差別化</strong><p>下線・枠線など色以外の手がかり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-letterspace">
+          <span class="ios-principle-icon">📏</span>
+          <div class="ios-principle-text"><strong>文字間隔はCSS</strong><p>ホワイトスペース文字は使わない</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-simple">
+          <span class="ios-principle-icon">📝</span>
+          <div class="ios-principle-text"><strong>シンプルレイアウト</strong><p>縦配置基本、段組は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-focus-ring">
+          <span class="ios-principle-icon">🟡</span>
+          <div class="ios-principle-text"><strong>フォーカスインジケーター</strong><p>キーボード操作時に枠表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-tap-target">
+          <span class="ios-principle-icon">👆</span>
+          <div class="ios-principle-text"><strong>タップ44px以上</strong><p>操作しやすい大きさ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-keyboard">
+          <span class="ios-principle-icon">⌨️</span>
+          <div class="ios-principle-text"><strong>キーボード操作対応</strong><p>Tab送りで全操作可能</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-rightclick">
+          <span class="ios-principle-icon">🖱️</span>
+          <div class="ios-principle-text"><strong>右クリック／選択許容</strong><p>コピー・テキスト選択OK</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-gesture">
+          <span class="ios-principle-icon">👉</span>
+          <div class="ios-principle-text"><strong>シンプルなジェスチャー</strong><p>複雑なスワイプの代替あり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-click-menu">
+          <span class="ios-principle-icon">👇</span>
+          <div class="ios-principle-text"><strong>クリック起点のメニュー</strong><p>マウスオーバー表示は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-video">
+          <span class="ios-principle-icon">▶️</span>
+          <div class="ios-principle-text"><strong>自動再生しない</strong><p>ユーザー操作で動作開始</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-external">
+          <span class="ios-principle-icon">🔗</span>
+          <div class="ios-principle-text"><strong>外部リンク明示</strong><p>別ドメイン遷移をアイコンで表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-help-fab">
+          <span class="ios-principle-icon">❓</span>
+          <div class="ios-principle-text"><strong>ヘルプ動線</strong><p>ヘルプボタン常設</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+      </div>
+    </details>
+      </div>
+      <div class="ios-home-indicator"></div>
+    </div>
+  </div>
+</section>
+<section class="screen mobile-screen" data-screen="complete" data-device="mobile" hidden>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-viewport">
+      
+    <div class="ios-status">
+      <span class="ios-time">9:41</span>
+      <span class="ios-icons"><span class="ios-signal">●●●●</span> <span class="ios-wifi">􀙇</span> <span class="ios-battery">􀛨</span></span>
+    </div>
+      
+    <div class="ios-navbar">
+      <button class="ios-back" type="button">‹ 戻る</button>
+      <div class="ios-navbar-title">完了</div>
+      <span class="ios-help" data-anchor="s-help-fab" title="ヘルプ">?</span>
+      
+    </div>
+      <div class="ios-scroll">
+        
+    <div class="ios-complete">
+      <div class="ios-complete-icon">✓</div>
+      <h1 class="ios-screen-title" data-anchor="s-heading">申請が完了しました</h1>
+      <p class="ios-desc">申請番号: A-2026-000123</p>
+    </div>
+
+    <div class="ios-alert ios-alert-info" data-anchor="s-email-confirm">
+      <strong>確認メールを送信しました</strong>
+      <p>登録メールアドレスに送信内容の控えをお送りしました。</p>
+    </div>
+
+    <div class="ios-section">
+      <div class="ios-section-hd">関連情報</div>
+      <a class="ios-link" href="#" data-anchor="s-link-text">申請状況の確認ページを見る</a>
+    </div>
+
+    <div class="ios-toast" data-anchor="s-toast">✓ 保存しました</div>
+
+    <div class="ios-row-block" data-anchor="s-loading">
+      <p class="ios-help">処理中はインジケーターで状態を通知します</p>
+    </div>
+    
+        
+    <details class="ios-sheet">
+      <summary class="ios-sheet-summary">共通UI原則を表示</summary>
+      <div class="ios-sheet-body">
+        
+        <div class="ios-principle" data-anchor="s-responsive">
+          <span class="ios-principle-icon">📱</span>
+          <div class="ios-principle-text"><strong>レスポンシブ対応</strong><p>スマホ／PC両対応</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-designsys">
+          <span class="ios-principle-icon">🎨</span>
+          <div class="ios-principle-text"><strong>デザインシステム準拠</strong><p>色・タイポ・コンポーネント統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-consistency">
+          <span class="ios-principle-icon">📐</span>
+          <div class="ios-principle-text"><strong>レイアウト一貫性</strong><p>機能・用語・操作が統一</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-font-size">
+          <span class="ios-principle-icon">🔤</span>
+          <div class="ios-principle-text"><strong>本文 16px 以上</strong><p>読みやすい本文サイズ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-contrast">
+          <span class="ios-principle-icon">🌓</span>
+          <div class="ios-principle-text"><strong>コントラスト 4.5:1 以上</strong><p>判別しやすい配色</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-differ">
+          <span class="ios-principle-icon">🔘</span>
+          <div class="ios-principle-text"><strong>操作可能要素の差別化</strong><p>下線・枠線など色以外の手がかり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-letterspace">
+          <span class="ios-principle-icon">📏</span>
+          <div class="ios-principle-text"><strong>文字間隔はCSS</strong><p>ホワイトスペース文字は使わない</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-simple">
+          <span class="ios-principle-icon">📝</span>
+          <div class="ios-principle-text"><strong>シンプルレイアウト</strong><p>縦配置基本、段組は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-focus-ring">
+          <span class="ios-principle-icon">🟡</span>
+          <div class="ios-principle-text"><strong>フォーカスインジケーター</strong><p>キーボード操作時に枠表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-tap-target">
+          <span class="ios-principle-icon">👆</span>
+          <div class="ios-principle-text"><strong>タップ44px以上</strong><p>操作しやすい大きさ</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-keyboard">
+          <span class="ios-principle-icon">⌨️</span>
+          <div class="ios-principle-text"><strong>キーボード操作対応</strong><p>Tab送りで全操作可能</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-rightclick">
+          <span class="ios-principle-icon">🖱️</span>
+          <div class="ios-principle-text"><strong>右クリック／選択許容</strong><p>コピー・テキスト選択OK</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-gesture">
+          <span class="ios-principle-icon">👉</span>
+          <div class="ios-principle-text"><strong>シンプルなジェスチャー</strong><p>複雑なスワイプの代替あり</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-click-menu">
+          <span class="ios-principle-icon">👇</span>
+          <div class="ios-principle-text"><strong>クリック起点のメニュー</strong><p>マウスオーバー表示は避ける</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-video">
+          <span class="ios-principle-icon">▶️</span>
+          <div class="ios-principle-text"><strong>自動再生しない</strong><p>ユーザー操作で動作開始</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-external">
+          <span class="ios-principle-icon">🔗</span>
+          <div class="ios-principle-text"><strong>外部リンク明示</strong><p>別ドメイン遷移をアイコンで表示</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+        <div class="ios-principle" data-anchor="s-help-fab">
+          <span class="ios-principle-icon">❓</span>
+          <div class="ios-principle-text"><strong>ヘルプ動線</strong><p>ヘルプボタン常設</p></div>
+          <span class="ios-principle-chev">›</span>
+        </div>
+      </div>
+    </details>
+      </div>
+      <div class="ios-home-indicator"></div>
+    </div>
+  </div>
+</section>
+<!-- MOBILE SECTIONS END -->
+    </div>
+  </section>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" aria-label="チェックリスト">
+    <div class="sidebar-header">
+      <h2 class="sidebar-title">
+        UIチェックリスト
+        <span class="sidebar-title-badge"><span id="selectedCount">0</span> / <span id="totalCount">0</span></span>
+      </h2>
+      <p class="sidebar-help">画面遷移で自動絞込み／カードクリックで該当UIへジャンプ</p>
+    </div>
+
+    <div class="sidebar-filters">
+      <div class="filter-mode" role="group" aria-label="表示モード">
+        <button class="filter-mode-btn" id="modeScreen" aria-pressed="true" type="button">この画面のみ</button>
+        <button class="filter-mode-btn" id="modeAll" aria-pressed="false" type="button">すべて表示</button>
+        <button class="filter-mode-btn" id="modeSelected" aria-pressed="false" type="button">採用済みのみ</button>
+      </div>
+      <div class="search-box">
+        <label class="sr-only" for="search">検索</label>
+        <input type="search" id="search" placeholder="キーワード検索">
+      </div>
+    </div>
+
+    <div class="sidebar-stat" aria-live="polite">
+      <span>表示 <strong id="visibleCount">0</strong> 件</span>
+      <span id="currentScreenLabel">ー</span>
+    </div>
+
+    <div class="sidebar-list" id="sidebarList">
+      <!-- cards injected -->
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="ds-btn ds-btn-pri" id="exportBtn" disabled style="width:100%">
+        Excel形式でダウンロード
+      </button>
+      <button class="ds-btn ds-btn-sm" id="clearBtn" disabled style="background:white;color:var(--text-sub);border-color:var(--border);width:100%">
+        採用済みをすべて解除
+      </button>
+    </div>
+  </aside>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>

@@ -170,6 +170,31 @@ function toggleSelect(id) {
     showToast("採用リストに追加しました");
   }
   renderSidebar();
+  updateGlobalGridStates();
+}
+
+function updateGlobalGridStates() {
+  document.querySelectorAll('.ds-global-grid [data-anchor]').forEach(card => {
+    const items = CHECKLIST.filter(i => i.anchor === card.dataset.anchor);
+    card.classList.toggle('is-selected', items.some(i => state.selected.has(i.id)));
+  });
+}
+
+function attachGlobalGridEvents() {
+  document.querySelectorAll('.ds-global-grid [data-anchor]').forEach(card => {
+    card.addEventListener('click', () => {
+      const items = CHECKLIST.filter(i => i.anchor === card.dataset.anchor);
+      if (items.length === 0) return;
+      const allSelected = items.every(i => state.selected.has(i.id));
+      items.forEach(i => {
+        if (allSelected) state.selected.delete(i.id);
+        else state.selected.add(i.id);
+      });
+      showToast(allSelected ? "採用解除しました" : "採用リストに追加しました");
+      renderSidebar();
+      updateGlobalGridStates();
+    });
+  });
 }
 
 // ========== Navigation: find the right screen / device for an anchor ==========
@@ -365,4 +390,5 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize
   applyDeviceClass();
   switchScreen(SCREENS[0].id);
+  attachGlobalGridEvents();
 });

@@ -222,38 +222,42 @@ function refreshGlobalNotes() {
   );
   if (!visible) return;
 
-  const existingAnchors = new Set();
-  visible.querySelectorAll('[data-anchor]').forEach(el => existingAnchors.add(el.dataset.anchor));
-
-  const missing = CHECKLIST.filter(i =>
-    i.screens.includes(state.current) && !existingAnchors.has(i.anchor)
-  );
-
   if (state.device === 'web') {
     const grid = visible.querySelector('.ds-global-grid');
     if (!grid) return;
     grid.querySelectorAll('[data-dynamic]').forEach(el => el.remove());
-    missing.forEach(item => {
-      const div = document.createElement('div');
-      div.dataset.anchor = item.anchor;
-      div.dataset.dynamic = 'true';
-      const icon = ANCHOR_ICONS[item.anchor] || CATEGORY_ICONS[item.category] || '📋';
-      div.innerHTML = `${icon} <strong>${item.subcategory}</strong><p class="ds-small">${getShortDesc(item)}</p>`;
-      grid.appendChild(div);
-    });
+    // グローバルノートにまだない項目を特定（サンプルHTML内の存在は問わない）
+    const gridAnchors = new Set();
+    grid.querySelectorAll('[data-anchor]').forEach(el => gridAnchors.add(el.dataset.anchor));
+    CHECKLIST
+      .filter(i => i.screens.includes(state.current) && !gridAnchors.has(i.anchor))
+      .forEach(item => {
+        const div = document.createElement('div');
+        div.dataset.anchor = item.anchor;
+        div.dataset.dynamic = 'true';
+        const icon = ANCHOR_ICONS[item.anchor] || CATEGORY_ICONS[item.category] || '📋';
+        const title = (item.no ? item.no + ' ' : '') + item.subcategory;
+        div.innerHTML = `${icon} <strong>${title}</strong><p class="ds-small">${getShortDesc(item)}</p>`;
+        grid.appendChild(div);
+      });
   } else {
     const sheetBody = visible.querySelector('.ios-sheet-body');
     if (!sheetBody) return;
     sheetBody.querySelectorAll('[data-dynamic]').forEach(el => el.remove());
-    missing.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'ios-principle';
-      div.dataset.anchor = item.anchor;
-      div.dataset.dynamic = 'true';
-      const icon = ANCHOR_ICONS[item.anchor] || CATEGORY_ICONS[item.category] || '📋';
-      div.innerHTML = `<span class="ios-principle-icon">${icon}</span><div class="ios-principle-text"><strong>${item.subcategory}</strong><p>${getShortDesc(item)}</p></div><span class="ios-principle-chev">›</span>`;
-      sheetBody.appendChild(div);
-    });
+    const sheetAnchors = new Set();
+    sheetBody.querySelectorAll('[data-anchor]').forEach(el => sheetAnchors.add(el.dataset.anchor));
+    CHECKLIST
+      .filter(i => i.screens.includes(state.current) && !sheetAnchors.has(i.anchor))
+      .forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'ios-principle';
+        div.dataset.anchor = item.anchor;
+        div.dataset.dynamic = 'true';
+        const icon = ANCHOR_ICONS[item.anchor] || CATEGORY_ICONS[item.category] || '📋';
+        const title = (item.no ? item.no + ' ' : '') + item.subcategory;
+        div.innerHTML = `<span class="ios-principle-icon">${icon}</span><div class="ios-principle-text"><strong>${title}</strong><p>${getShortDesc(item)}</p></div><span class="ios-principle-chev">›</span>`;
+        sheetBody.appendChild(div);
+      });
   }
 
   updateGlobalGridStates();

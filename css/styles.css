@@ -127,7 +127,11 @@
   }
   @media (max-width: 1200px) {
     .layout { grid-template-columns: 1fr; }
-    .sidebar { position: static !important; max-height: none !important; }
+    .sidebar {
+      position: static !important;
+      height: auto !important;
+      max-height: none !important;
+    }
   }
 
   /* ============ Sample site (center) ============ */
@@ -579,7 +583,7 @@
   .sidebar {
     position: sticky;
     top: 128px;
-    max-height: calc(100vh - 160px);
+    height: calc(100vh - 160px);
     display: flex;
     flex-direction: column;
     background: var(--surface);

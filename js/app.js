@@ -69,6 +69,7 @@ function switchScreen(id) {
   const urlEl = $("#sampleUrl");
   if (urlEl) urlEl.textContent = urls[id] || "";
   renderSidebar();
+  refreshGlobalNotes();
   // scroll sample area to top
   const layout = document.querySelector('.layout');
   if (layout) window.scrollTo({top: layout.offsetTop - 20, behavior: 'smooth'});
@@ -161,6 +162,26 @@ function attachCardEvents() {
   });
 }
 
+// ========== Persistence ==========
+const STORAGE_KEY = 'uiChecklist_selected';
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...state.selected]));
+  } catch (e) {}
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const ids = JSON.parse(saved);
+      const validIds = new Set(CHECKLIST.map(i => i.id));
+      ids.forEach(id => { if (validIds.has(id)) state.selected.add(id); });
+    }
+  } catch (e) {}
+}
+
 function toggleSelect(id) {
   if (state.selected.has(id)) {
     state.selected.delete(id);
@@ -169,60 +190,76 @@ function toggleSelect(id) {
     state.selected.add(id);
     showToast("採用リストに追加しました");
   }
+  saveState();
   renderSidebar();
   updateGlobalGridStates();
 }
 
 function updateGlobalGridStates() {
-  document.querySelectorAll('.ds-global-grid [data-anchor]').forEach(card => {
+  document.querySelectorAll('.ds-global-grid [data-anchor], .ios-principle[data-anchor]').forEach(card => {
     const items = CHECKLIST.filter(i => i.anchor === card.dataset.anchor);
     card.classList.toggle('is-selected', items.some(i => state.selected.has(i.id)));
   });
 }
 
-function attachGlobalGridEvents() {
-  document.querySelectorAll('.ds-global-grid [data-anchor]').forEach(card => {
-    card.addEventListener('click', () => {
-      const items = CHECKLIST.filter(i => i.anchor === card.dataset.anchor);
-      if (items.length === 0) return;
-      const allSelected = items.every(i => state.selected.has(i.id));
-      items.forEach(i => {
-        if (allSelected) state.selected.delete(i.id);
-        else state.selected.add(i.id);
-      });
-      showToast(allSelected ? "採用解除しました" : "採用リストに追加しました");
-      renderSidebar();
-      updateGlobalGridStates();
+// ========== Dynamic global notes ==========
+const CATEGORY_ICONS = {
+  '一貫性': '📐', '機能性': '⚙️', '入力・操作': '✏️',
+  '利用安全': '🛡️', '識別性': '👁️', '理解性': '💡',
+};
+const ANCHOR_ICONS = { 's-terms': '📖', 's-required': '⭐', 's-modal': '🪟' };
+
+function getShortDesc(item) {
+  const text = item.content.replace(/\n/g, ' ').trim();
+  const p = text.indexOf('。');
+  if (p > 0 && p < 45) return text.substring(0, p + 1);
+  return text.substring(0, 38) + '…';
+}
+
+function refreshGlobalNotes() {
+  const visible = document.querySelector(
+    `.screen[data-screen="${state.current}"][data-device="${state.device}"]:not([hidden])`
+  );
+  if (!visible) return;
+
+  const existingAnchors = new Set();
+  visible.querySelectorAll('[data-anchor]').forEach(el => existingAnchors.add(el.dataset.anchor));
+
+  const missing = CHECKLIST.filter(i =>
+    i.screens.includes(state.current) && !existingAnchors.has(i.anchor)
+  );
+
+  if (state.device === 'web') {
+    const grid = visible.querySelector('.ds-global-grid');
+    if (!grid) return;
+    grid.querySelectorAll('[data-dynamic]').forEach(el => el.remove());
+    missing.forEach(item => {
+      const div = document.createElement('div');
+      div.dataset.anchor = item.anchor;
+      div.dataset.dynamic = 'true';
+      const icon = ANCHOR_ICONS[item.anchor] || CATEGORY_ICONS[item.category] || '📋';
+      div.innerHTML = `${icon} <strong>${item.subcategory}</strong><p class="ds-small">${getShortDesc(item)}</p>`;
+      grid.appendChild(div);
     });
-  });
+  } else {
+    const sheetBody = visible.querySelector('.ios-sheet-body');
+    if (!sheetBody) return;
+    sheetBody.querySelectorAll('[data-dynamic]').forEach(el => el.remove());
+    missing.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'ios-principle';
+      div.dataset.anchor = item.anchor;
+      div.dataset.dynamic = 'true';
+      const icon = ANCHOR_ICONS[item.anchor] || CATEGORY_ICONS[item.category] || '📋';
+      div.innerHTML = `<span class="ios-principle-icon">${icon}</span><div class="ios-principle-text"><strong>${item.subcategory}</strong><p>${getShortDesc(item)}</p></div><span class="ios-principle-chev">›</span>`;
+      sheetBody.appendChild(div);
+    });
+  }
+
+  updateGlobalGridStates();
 }
 
-// ========== Navigation: find the right screen / device for an anchor ==========
-function findAnchorLocation(anchorId, preferredScreen, preferredDevice) {
-  // Returns {screen, device} where this anchor exists. Priority:
-  //   1. preferredScreen in preferredDevice
-  //   2. any screen in preferredDevice
-  //   3. any screen in the other device
-  if (!anchorId) return null;
-  const sections = document.querySelectorAll('.screen[data-screen][data-device]');
-  // Build index: anchor -> [{screen, device}, ...]
-  const matches = [];
-  sections.forEach(sec => {
-    if (sec.querySelector(`[data-anchor="${anchorId}"]`)) {
-      matches.push({ screen: sec.dataset.screen, device: sec.dataset.device });
-    }
-  });
-  if (matches.length === 0) return null;
-  // Priority 1
-  const pri1 = matches.find(m => m.screen === preferredScreen && m.device === preferredDevice);
-  if (pri1) return pri1;
-  // Priority 2
-  const pri2 = matches.find(m => m.device === preferredDevice);
-  if (pri2) return pri2;
-  // Priority 3
-  return matches[0];
-}
-
+// ========== Navigation ==========
 function navigateToItem(item) {
   if (!item) return;
   const anchorId = item.anchor;
@@ -272,6 +309,7 @@ function navigateToItem(item) {
     $$(".screen").forEach(s => {
       s.hidden = !(s.dataset.screen === state.current && s.dataset.device === state.device);
     });
+    refreshGlobalNotes();
   }
 
   // After screen switch, scroll+highlight the anchor
@@ -383,12 +421,31 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#clearBtn").addEventListener("click", () => {
     if (!confirm("採用済みをすべて解除しますか？")) return;
     state.selected.clear();
+    saveState();
     renderSidebar();
+    updateGlobalGridStates();
     showToast("解除しました");
   });
 
+  // Delegated click handler for global notes (web + mobile)
+  document.addEventListener('click', e => {
+    const card = e.target.closest('.ds-global-grid [data-anchor], .ios-principle[data-anchor]');
+    if (!card) return;
+    const items = CHECKLIST.filter(i => i.anchor === card.dataset.anchor);
+    if (items.length === 0) return;
+    const allSelected = items.every(i => state.selected.has(i.id));
+    items.forEach(i => {
+      if (allSelected) state.selected.delete(i.id);
+      else state.selected.add(i.id);
+    });
+    showToast(allSelected ? "採用解除しました" : "採用リストに追加しました");
+    saveState();
+    renderSidebar();
+    updateGlobalGridStates();
+  });
+
   // Initialize
+  loadState();
   applyDeviceClass();
   switchScreen(SCREENS[0].id);
-  attachGlobalGridEvents();
 });

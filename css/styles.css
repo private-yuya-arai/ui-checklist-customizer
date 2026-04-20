@@ -1490,6 +1490,11 @@
   .ios-principle-text strong { display: block; font-size: 14px; font-weight: 600; }
   .ios-principle-text p { margin: 0; font-size: 12px; color: var(--text-sub); }
   .ios-principle-chev { color: #C7C7CC; font-size: 18px; }
+  .ios-principle { cursor: pointer; transition: background 0.12s; }
+  .ios-principle:hover { background: var(--primary-light); }
+  .ios-principle.is-selected { background: var(--selected-bg); }
+  .ios-principle.is-selected .ios-principle-chev { font-size: 0; }
+  .ios-principle.is-selected .ios-principle-chev::before { content: "✓"; font-size: 18px; color: var(--primary); font-weight: 700; }
 
   /* ============ Highlight override for iOS elements ============ */
   .phone-viewport .highlight-target {

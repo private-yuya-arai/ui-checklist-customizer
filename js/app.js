@@ -6,6 +6,7 @@ const state = {
   device: "web",            // web | mobile
   current: SCREENS[0].id,   // current screen id
   mode: "screen",           // screen | all | selected
+  globalMode: "screen",     // screen | all | selected (global notes filter)
   query: "",
   selected: new Set(),      // item IDs
 };
@@ -192,7 +193,11 @@ function toggleSelect(id) {
   }
   saveState();
   renderSidebar();
-  updateGlobalGridStates();
+  if (state.globalMode === 'selected') {
+    refreshGlobalNotes();
+  } else {
+    updateGlobalGridStates();
+  }
 }
 
 function updateGlobalGridStates() {
@@ -207,7 +212,25 @@ const CATEGORY_ICONS = {
   '一貫性': '📐', '機能性': '⚙️', '入力・操作': '✏️',
   '利用安全': '🛡️', '識別性': '👁️', '理解性': '💡',
 };
-const ANCHOR_ICONS = { 's-terms': '📖', 's-required': '⭐', 's-modal': '🪟' };
+const GLOBAL_NOTES_DISPLAY = {
+  's-responsive':  { icon: '📱', title: 'レスポンシブ対応',         desc: 'スマホ／PC両対応' },
+  's-designsys':   { icon: '🎨', title: 'デザインシステム準拠',     desc: '色・タイポ・コンポーネント統一' },
+  's-consistency': { icon: '📐', title: 'レイアウト一貫性',         desc: '機能・用語・操作が統一' },
+  's-font-size':   { icon: '🔤', title: '本文 16px 以上',           desc: '読みやすい本文サイズ' },
+  's-contrast':    { icon: '🌓', title: 'コントラスト 4.5:1 以上',  desc: '判別しやすい配色' },
+  's-differ':      { icon: '🔘', title: '操作可能要素の差別化',     desc: '下線・枠線など色以外の手がかり' },
+  's-letterspace': { icon: '📏', title: '文字間隔はCSS',            desc: 'ホワイトスペース文字は使わない' },
+  's-simple':      { icon: '📝', title: 'シンプルレイアウト',       desc: '縦配置基本、段組は避ける' },
+  's-focus-ring':  { icon: '🟡', title: 'フォーカスインジケーター', desc: 'キーボード操作時に枠表示' },
+  's-tap-target':  { icon: '👆', title: 'タップ44px以上',           desc: '操作しやすい大きさ' },
+  's-keyboard':    { icon: '⌨️', title: 'キーボード操作対応',       desc: 'Tab送りで全操作可能' },
+  's-rightclick':  { icon: '🖱️', title: '右クリック／選択許容',    desc: 'コピー・テキスト選択OK' },
+  's-gesture':     { icon: '👉', title: 'シンプルなジェスチャー',   desc: '複雑なスワイプの代替あり' },
+  's-click-menu':  { icon: '👇', title: 'クリック起点のメニュー',   desc: 'マウスオーバー表示は避ける' },
+  's-video':       { icon: '▶️', title: '自動再生しない',           desc: 'ユーザー操作で動作開始' },
+  's-external':    { icon: '🔗', title: '外部リンク明示',           desc: '別ドメイン遷移をアイコンで表示' },
+  's-help-fab':    { icon: '❓', title: 'ヘルプ動線',               desc: '右下のヘルプボタン常設' },
+};
 
 function getShortDesc(item) {
   const text = item.content.replace(/\n/g, ' ').trim();
@@ -216,48 +239,66 @@ function getShortDesc(item) {
   return text.substring(0, 38) + '…';
 }
 
+function getDisplayInfo(item) {
+  const d = GLOBAL_NOTES_DISPLAY[item.anchor];
+  if (d) return d;
+  return {
+    icon: CATEGORY_ICONS[item.category] || '📋',
+    title: (item.no ? item.no + ' ' : '') + item.subcategory,
+    desc: getShortDesc(item),
+  };
+}
+
+function getGlobalItems() {
+  if (state.globalMode === 'all') return CHECKLIST;
+  if (state.globalMode === 'selected') return CHECKLIST.filter(i => state.selected.has(i.id));
+  return CHECKLIST.filter(i => i.screens.includes(state.current));
+}
+
+function globalFilterBarHtml(count) {
+  const modes = [
+    { id: 'screen', label: 'この画面のみ' },
+    { id: 'all',    label: 'すべて表示' },
+    { id: 'selected', label: '採用済みのみ' },
+  ];
+  return `<div class="global-filter-bar">${
+    modes.map(m =>
+      `<button class="global-filter-btn${state.globalMode === m.id ? ' is-active' : ''}" data-gmode="${m.id}">${m.label}</button>`
+    ).join('')
+  }<span class="global-filter-count">${count}件</span></div>`;
+}
+
 function refreshGlobalNotes() {
   const visible = document.querySelector(
     `.screen[data-screen="${state.current}"][data-device="${state.device}"]:not([hidden])`
   );
   if (!visible) return;
 
+  const items = getGlobalItems();
+
   if (state.device === 'web') {
     const grid = visible.querySelector('.ds-global-grid');
     if (!grid) return;
-    grid.querySelectorAll('[data-dynamic]').forEach(el => el.remove());
-    // グローバルノートにまだない項目を特定（サンプルHTML内の存在は問わない）
-    const gridAnchors = new Set();
-    grid.querySelectorAll('[data-anchor]').forEach(el => gridAnchors.add(el.dataset.anchor));
-    CHECKLIST
-      .filter(i => i.screens.includes(state.current) && !gridAnchors.has(i.anchor))
-      .forEach(item => {
-        const div = document.createElement('div');
-        div.dataset.anchor = item.anchor;
-        div.dataset.dynamic = 'true';
-        const icon = ANCHOR_ICONS[item.anchor] || CATEGORY_ICONS[item.category] || '📋';
-        const title = (item.no ? item.no + ' ' : '') + item.subcategory;
-        div.innerHTML = `${icon} <strong>${title}</strong><p class="ds-small">${getShortDesc(item)}</p>`;
-        grid.appendChild(div);
-      });
+    grid.innerHTML = globalFilterBarHtml(items.length);
+    items.forEach(item => {
+      const { icon, title, desc } = getDisplayInfo(item);
+      const div = document.createElement('div');
+      div.dataset.anchor = item.anchor;
+      div.innerHTML = `${icon} <strong>${title}</strong><p class="ds-small">${desc}</p>`;
+      grid.appendChild(div);
+    });
   } else {
     const sheetBody = visible.querySelector('.ios-sheet-body');
     if (!sheetBody) return;
-    sheetBody.querySelectorAll('[data-dynamic]').forEach(el => el.remove());
-    const sheetAnchors = new Set();
-    sheetBody.querySelectorAll('[data-anchor]').forEach(el => sheetAnchors.add(el.dataset.anchor));
-    CHECKLIST
-      .filter(i => i.screens.includes(state.current) && !sheetAnchors.has(i.anchor))
-      .forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'ios-principle';
-        div.dataset.anchor = item.anchor;
-        div.dataset.dynamic = 'true';
-        const icon = ANCHOR_ICONS[item.anchor] || CATEGORY_ICONS[item.category] || '📋';
-        const title = (item.no ? item.no + ' ' : '') + item.subcategory;
-        div.innerHTML = `<span class="ios-principle-icon">${icon}</span><div class="ios-principle-text"><strong>${title}</strong><p>${getShortDesc(item)}</p></div><span class="ios-principle-chev">›</span>`;
-        sheetBody.appendChild(div);
-      });
+    sheetBody.innerHTML = globalFilterBarHtml(items.length);
+    items.forEach(item => {
+      const { icon, title, desc } = getDisplayInfo(item);
+      const div = document.createElement('div');
+      div.className = 'ios-principle';
+      div.dataset.anchor = item.anchor;
+      div.innerHTML = `<span class="ios-principle-icon">${icon}</span><div class="ios-principle-text"><strong>${title}</strong><p>${desc}</p></div><span class="ios-principle-chev">›</span>`;
+      sheetBody.appendChild(div);
+    });
   }
 
   updateGlobalGridStates();
@@ -427,12 +468,20 @@ document.addEventListener("DOMContentLoaded", () => {
     state.selected.clear();
     saveState();
     renderSidebar();
-    updateGlobalGridStates();
+    refreshGlobalNotes();
     showToast("解除しました");
   });
 
-  // Delegated click handler for global notes (web + mobile)
+  // Delegated click handler for global notes filter buttons
   document.addEventListener('click', e => {
+    const filterBtn = e.target.closest('.global-filter-btn[data-gmode]');
+    if (filterBtn) {
+      state.globalMode = filterBtn.dataset.gmode;
+      refreshGlobalNotes();
+      return;
+    }
+
+    // Delegated click handler for global notes items (web + mobile)
     const card = e.target.closest('.ds-global-grid [data-anchor], .ios-principle[data-anchor]');
     if (!card) return;
     const items = CHECKLIST.filter(i => i.anchor === card.dataset.anchor);
@@ -445,7 +494,11 @@ document.addEventListener("DOMContentLoaded", () => {
     showToast(allSelected ? "採用解除しました" : "採用リストに追加しました");
     saveState();
     renderSidebar();
-    updateGlobalGridStates();
+    if (state.globalMode === 'selected') {
+      refreshGlobalNotes();
+    } else {
+      updateGlobalGridStates();
+    }
   });
 
   // Initialize

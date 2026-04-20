@@ -536,6 +536,7 @@
     min-width: 44px; min-height: 44px;
   }
   .ds-fab:hover { background: var(--primary-hover); }
+  .ds-fab.highlight-target { position: absolute; }
 
   /* Global anchors collapsible */
   .ds-global-note {

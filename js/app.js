@@ -369,16 +369,25 @@ function highlightAnchor(anchorId) {
   );
   if (!visible) return;
 
-  // Prefer the element that is NOT inside a collapsed <details>
-  // (so prominent UI like the ? FAB button is picked over a grid item in an accordion)
+  // Prefer elements that are NOT inside .ds-global-grid (the common-principles accordion).
+  // This ensures clicks always land on the sample screen UI, not the principles panel.
   const candidates = visible.querySelectorAll(`[data-anchor="${anchorId}"]`);
   if (candidates.length === 0) return;
+
+  const mainCandidates = [...candidates].filter(c => !c.closest('.ds-global-grid, .ios-principle'));
   let el = null;
-  for (const c of candidates) {
-    const det = c.closest('details');
-    if (!det || det.open) { el = c; break; }
+
+  if (mainCandidates.length > 0) {
+    // Among main-content candidates, prefer one not inside a collapsed <details>
+    for (const c of mainCandidates) {
+      const det = c.closest('details');
+      if (!det || det.open) { el = c; break; }
+    }
+    if (!el) el = mainCandidates[0];
+  } else {
+    // No main-content element — scroll to the top of the sample card instead
+    el = visible.querySelector('.ds-card, .ios-card') || visible;
   }
-  if (!el) el = candidates[0];
 
   // Auto-open any ancestor <details> so content is visible before scrolling
   let p = el.parentElement;
